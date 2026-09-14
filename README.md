@@ -14,6 +14,7 @@
   <img src="https://img.shields.io/badge/BUIDL%20CTC-2026-blue" alt="BUIDL CTC 2026">
   <img src="https://img.shields.io/badge/Track-AI-purple" alt="AI Track">
   <img src="https://img.shields.io/badge/Creditcoin-Testnet-orange" alt="Creditcoin Testnet">
+  <img src="https://img.shields.io/badge/Attestcoin-Verified-success" alt="Attestcoin Verified">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License">
 </p>
 
@@ -21,14 +22,25 @@
 
 ## Overview
 
-**Autonomous Cross-Chain Credit Agent** is an AI-powered credit infrastructure prototype that transforms financial activity from another blockchain into an autonomous credit decision and execution flow on Creditcoin.
+**Autonomous Cross-Chain Credit Agent** is an AI-powered credit infrastructure prototype that transforms financial activity from another blockchain into a structured credit decision and controlled execution workflow on Creditcoin.
 
 The system combines:
 
+* Cross-chain financial evidence
+* Attestcoin Protocol
+* AI-driven credit risk assessment
+* Deterministic RiskGuard policies
+* Creditcoin execution infrastructure
+* Solidity smart contracts
+
+The core architecture is:
+
 ```text
-Cross-Chain Financial Evidence
+Cross-Chain Financial Activity
             ↓
-      Attestcoin Layer
+      Attestcoin Proof
+            ↓
+    Verified Evidence
             ↓
       AI Credit Agent
             ↓
@@ -37,109 +49,125 @@ Cross-Chain Financial Evidence
    Creditcoin Execution
             ↓
         Credit Line
-````
+```
 
-The goal is to demonstrate how verified financial evidence can be used by an autonomous agent to make bounded credit decisions without giving the AI unrestricted authority over execution.
+The key design principle is:
+
+> **AI provides intelligence. Deterministic code provides authority.**
 
 ---
 
-## The Problem
+# The Problem
 
-Traditional on-chain credit systems face several challenges:
+Traditional on-chain credit systems face several limitations:
 
 * Financial history may exist across different blockchains.
-* Borrowers often rely on manually submitted financial information.
-* Cross-chain data requires a trustworthy verification mechanism.
-* AI-generated financial decisions need deterministic safety boundaries.
-* Autonomous agents require controlled access to financial execution.
+* Borrowers may have meaningful financial activity outside the destination chain.
+* Cross-chain information requires a trustworthy verification mechanism.
+* AI-generated financial decisions require deterministic safety boundaries.
+* Autonomous agents should not have unrestricted authority over financial execution.
 
-This creates a gap between **cross-chain financial activity** and **autonomous credit decisioning**.
+This creates a gap between:
+
+**Cross-chain financial activity → verifiable evidence → intelligent credit decisions → controlled execution.**
+
+Autonomous Cross-Chain Credit Agent explores an architecture that connects these layers.
 
 ---
 
-## The Solution
+# The Solution
 
-Autonomous Cross-Chain Credit Agent connects these components into one workflow.
+The system converts source-chain financial activity into verifiable evidence, evaluates that evidence using an AI credit agent, and applies deterministic safety policies before an execution flow can proceed.
 
-The system evaluates financial evidence such as:
+The workflow is:
 
-* Repayment history
-* Failed obligations
-* Verified collateral
-* Financial activity duration
-* Source-chain activity
+```text
+Observe
+   ↓
+Verify
+   ↓
+Analyze
+   ↓
+Decide
+   ↓
+Validate
+   ↓
+Execute
+```
 
-The evidence is passed through the Attestcoin verification architecture and made available to the AI Credit Agent.
-
-The AI produces:
-
-* Risk level
-* Confidence score
-* Recommended credit amount
-* Recommended duration
-* Approval or rejection recommendation
-* Decision reasoning
-
-Before execution, **RiskGuard** validates the AI recommendation against deterministic safety policies.
+The system separates probabilistic AI reasoning from deterministic financial authority.
 
 ---
 
 # Architecture
 
 ```text
-┌───────────────────────────────────────┐
-│             SOURCE CHAIN              │
-│                                       │
-│  Repayments   Collateral   Activity   │
-│  Failed Obligations                   │
-└───────────────────┬───────────────────┘
-                    │
-                    ▼
-┌───────────────────────────────────────┐
-│              ATTESTCOIN               │
-│                                       │
-│  Cross-chain verification layer       │
-│  Proof Builder / Attestation flow     │
-└───────────────────┬───────────────────┘
-                    │
-                    ▼
-┌───────────────────────────────────────┐
-│           AI CREDIT AGENT             │
-│                                       │
-│  Risk Assessment                      │
-│  Confidence                           │
-│  Credit Recommendation                │
-│  Approval / Rejection                 │
-└───────────────────┬───────────────────┘
-                    │
-                    ▼
-┌───────────────────────────────────────┐
-│               RISKGUARD               │
-│                                       │
-│  Maximum Exposure                     │
-│  Collateral Coverage                  │
-│  Maximum Duration                     │
-│  Evidence Verification                │
-│  Risk Threshold                       │
-└───────────────────┬───────────────────┘
-                    │
-                    ▼
-┌───────────────────────────────────────┐
-│              CREDITCOIN               │
-│                                       │
-│  Credit Execution Flow                │
-│  Credit Line Management               │
-│  Draws / Repayments                   │
-└───────────────────────────────────────┘
+┌────────────────────────────────────────────┐
+│                SOURCE CHAIN                │
+│                                            │
+│  Repayments    Collateral    Obligations   │
+│       Financial Activity / Events          │
+└──────────────────────┬─────────────────────┘
+                       │
+                       │ Real Transaction
+                       ▼
+┌────────────────────────────────────────────┐
+│                ATTESTCOIN                  │
+│                                            │
+│  Source Block Attestation                  │
+│  Proof Builder                             │
+│  Merkle Proof                              │
+│  Continuity Proof                          │
+└──────────────────────┬─────────────────────┘
+                       │
+                       │ Verified Evidence
+                       ▼
+┌────────────────────────────────────────────┐
+│             AI CREDIT AGENT                │
+│                                            │
+│  Risk Assessment                           │
+│  Confidence                                │
+│  Credit Recommendation                     │
+│  Approval / Rejection                      │
+│  Decision Reasoning                        │
+└──────────────────────┬─────────────────────┘
+                       │
+                       ▼
+┌────────────────────────────────────────────┐
+│                 RISKGUARD                  │
+│                                            │
+│  Maximum Exposure                          │
+│  Collateral Coverage                       │
+│  Maximum Duration                          │
+│  Evidence Verification                     │
+│  Risk Threshold                            │
+└──────────────────────┬─────────────────────┘
+                       │
+                       ▼
+┌────────────────────────────────────────────┐
+│                CREDITCOIN                  │
+│                                            │
+│  Credit Execution Flow                     │
+│  Credit Line Management                    │
+│  Draws / Repayments                        │
+└────────────────────────────────────────────┘
 ```
 
 ---
 
 # How It Works
 
-### 1. Financial Activity
+## 1. Financial Activity
 
-The prototype includes a `FinancialActivityEmitter` smart contract that records borrower activity on the source chain.
+The prototype includes a Solidity smart contract named `FinancialActivityEmitter`.
+
+Location:
+
+```text
+contracts/source/FinancialActivityEmitter.sol
+```
+
+It records borrower activity on Ethereum Sepolia.
 
 Supported activities include:
 
@@ -150,13 +178,53 @@ Failed Obligations
 Activity Timestamps
 ```
 
-The contract emits events that can be used as source-chain financial evidence.
+The contract emits events that provide source-chain financial evidence.
+
+### Deployed Contract
+
+```text
+Ethereum Sepolia
+
+FinancialActivityEmitter:
+0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d
+```
+
+The contract has been deployed successfully and tested with real transactions.
 
 ---
 
-### 2. Attestcoin Verification
+# 2. Real Source-Chain Activity
 
-Attestcoin provides the cross-chain verification layer in the architecture.
+The prototype has generated actual Ethereum Sepolia transactions from the project wallet.
+
+### Collateral Transaction
+
+```text
+0x64626b7dd5cb0705535c87d25688126790a118eedbf107d6534b0053d9e32de1
+```
+
+### Repayment Transaction
+
+```text
+0x0e70933bde51ea11af6f153d1f0489d83a8fb7a363697512807644e059241eb5
+```
+
+Repayment details:
+
+```text
+Repayment ID: 1
+Amount: 100
+Source Chain: Ethereum Sepolia
+Source Block: 11704112
+```
+
+The source contract state was also read back from Ethereum Sepolia after the transactions.
+
+---
+
+# 3. Attestcoin Verification
+
+Attestcoin provides the cross-chain verification layer.
 
 The project integrates the official:
 
@@ -164,54 +232,118 @@ The project integrates the official:
 @gluwa/usc-sdk
 ```
 
-The integration is structured around the Attestcoin proof-generation and verification workflow.
-
-The intended pipeline is:
+The integration uses the Attestcoin proof workflow:
 
 ```text
-Source Transaction
+Real Source Transaction
         ↓
-Source Chain RPC
+Source Transaction Block
+        ↓
+Creditcoin Block Attestation
         ↓
 Attestcoin Proof Builder
         ↓
-Creditcoin Attestation
+Transaction Proof
         ↓
-Proof Data
-        ↓
-Verification Infrastructure
-        ↓
-Verified Cross-Chain Evidence
+Creditcoin Verification Precompile
+```
+
+## Real Proof Generation
+
+For the repayment transaction:
+
+```text
+TX:
+0x0e70933bde51ea11af6f153d1f0489d83a8fb7a363697512807644e059241eb5
+```
+
+the Attestcoin Proof Builder returned:
+
+```text
+success: true
+```
+
+The generated proof contained:
+
+* Source-chain header number
+* Transaction index
+* Encoded transaction
+* Merkle proof
+* Continuity proof
+
+The proof corresponded to:
+
+```text
+Chain Key: 1
+Header Number: 11704112
+Transaction Index: 87
 ```
 
 ---
 
-### 3. AI Credit Agent
+# 4. Attestcoin Cryptographic Verification
+
+The generated proof was then passed to the official `PrecompileBlockProver.verifySingle()` flow.
+
+The verification call used:
+
+```text
+chainKey
+headerNumber
+encodedTransaction
+merkleProof
+continuityProof
+```
+
+The actual result was:
+
+```text
+VERIFICATION RESULT:
+true
+```
+
+This means the prototype has successfully demonstrated:
+
+```text
+Real Ethereum Sepolia Transaction
+             ↓
+      Attestcoin Proof
+             ↓
+ Creditcoin Verification
+             ↓
+            TRUE
+```
+
+This is a real proof-verification result rather than a mocked frontend status.
+
+---
+
+# 5. AI Credit Agent
 
 The AI Credit Agent evaluates the available financial evidence.
 
-The current risk engine considers:
+The current risk engine considers signals including:
 
 ```text
 Repayment Count
 Failed Obligations
-Collateral Ratio
+Collateral
 Activity Duration
 Evidence Verification
 ```
 
-It produces a structured decision:
+It produces structured decision data:
 
 ```text
-Risk
+Risk Level
 Confidence
-Recommended Amount
+Recommended Credit Amount
 Recommended Duration
 Approval / Rejection
-Reasoning
+Decision Reasoning
 ```
 
-The current prototype supports:
+Supported risk levels:
 
 ```text
 LOW
@@ -219,15 +351,30 @@ MEDIUM
 HIGH
 ```
 
+Example prototype decision:
+
+```text
+Requested Amount: $1,000
+Duration: 30 days
+
+Risk: LOW
+Confidence: 95%
+
+Recommended Credit: $1,000
+Decision: APPROVE
+```
+
+The AI decision is intended to be evaluated by RiskGuard before execution.
+
 ---
 
-### 4. RiskGuard
+# 6. RiskGuard
 
-The AI does not have unlimited execution authority.
+The AI does not have unrestricted financial authority.
 
 RiskGuard acts as a deterministic safety layer between AI decisioning and execution.
 
-It validates:
+It evaluates policies including:
 
 ```text
 Maximum Credit Exposure
@@ -237,17 +384,41 @@ Evidence Verification
 Risk Threshold
 ```
 
-Only decisions that satisfy the predefined policies are allowed to continue through the execution flow.
+Example policy configuration:
+
+```text
+Maximum Exposure: $5,000
+Minimum Collateral Coverage: 50%
+Maximum Duration: 90 days
+Evidence: Required
+Risk: LOW or MEDIUM
+```
+
+The architectural separation is:
+
+```text
+AI
+ ↓
+Recommendation
+
+RiskGuard
+ ↓
+Permission / Rejection
+
+Creditcoin
+ ↓
+Execution
+```
 
 ---
 
-### 5. Creditcoin
+# 7. Creditcoin Execution
 
-After the AI recommendation passes RiskGuard policies, the system moves into the Creditcoin execution flow.
+Creditcoin is the destination environment for the credit execution layer.
 
-The prototype manages:
+The application contains a credit-line workflow for:
 
-* Credit limit
+* Credit limits
 * Available credit
 * Used credit
 * Outstanding balance
@@ -255,11 +426,15 @@ The prototype manages:
 * Repayments
 * Transaction history
 
+The current prototype separates the verified Attestcoin evidence path from the Creditcoin execution path.
+
+**Important:** the project does not claim a Creditcoin execution transaction unless an actual on-chain execution transaction has been submitted and verified.
+
 ---
 
 # Example Credit Decision
 
-The demonstration scenario uses:
+The application demonstration uses the following scenario:
 
 | Metric                |   Value |
 | --------------------- | ------: |
@@ -273,13 +448,15 @@ The demonstration scenario uses:
 | AI Confidence         |     95% |
 | Recommended Credit    |  $1,000 |
 
-The recommendation then passes through RiskGuard before entering the Creditcoin execution flow.
+The recommendation is then evaluated by RiskGuard before the execution workflow.
+
+> The values above represent the application's demonstration scenario. The currently verified live on-chain evidence is the real Ethereum Sepolia activity described in the **Real On-Chain Evidence** section.
 
 ---
 
 # Credit Line Lifecycle
 
-### Initial Credit Line
+## Initial Credit Line
 
 ```text
 Credit Limit:     $1,000
@@ -288,7 +465,7 @@ Available:        $1,000
 Outstanding:      $0
 ```
 
-### After $500 Draw
+## After $500 Draw
 
 ```text
 Credit Limit:     $1,000
@@ -298,7 +475,7 @@ Outstanding:      $500
 Utilization:      50%
 ```
 
-### After $200 Repayment
+## After $200 Repayment
 
 ```text
 Credit Limit:     $1,000
@@ -307,15 +484,59 @@ Available:        $700
 Outstanding:      $300
 ```
 
+These values represent the application's credit-line workflow and should not be interpreted as a completed on-chain Creditcoin lending transaction unless separately identified with a real transaction hash.
+
+---
+
+# Real On-Chain Evidence
+
+The most important verified blockchain evidence currently demonstrated by the prototype is:
+
+### Source Contract
+
+```text
+0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d
+```
+
+### Collateral Transaction
+
+```text
+0x64626b7dd5cb0705535c87d25688126790a118eedbf107d6534b0053d9e32de1
+```
+
+### Repayment Transaction
+
+```text
+0x0e70933bde51ea11af6f153d1f0489d83a8fb7a363697512807644e059241eb5
+```
+
+### Attested Source Block
+
+```text
+11704112
+```
+
+### Attestcoin Chain Key
+
+```text
+1
+```
+
+### Attestcoin Proof
+
+```text
+Generated: SUCCESS
+```
+
+### Attestcoin Verification
+
+```text
+Precompile Verification: TRUE
+```
+
 ---
 
 # Attestcoin Integration
-
-The project uses:
-
-```text
-@gluwa/usc-sdk
-```
 
 The Attestcoin integration is located under:
 
@@ -323,20 +544,37 @@ The Attestcoin integration is located under:
 lib/attestcoin/
 ```
 
-The proof service handles the proof-generation workflow:
+The current implementation includes:
+
+```text
+lib/attestcoin/client.ts
+lib/attestcoin/proof-service.ts
+```
+
+The proof workflow is designed around:
 
 ```text
 1. Wait for source transaction
 2. Detect source block
-3. Wait for block attestation
+3. Wait for Creditcoin attestation
 4. Request proof from Proof Builder
-5. Return proof data
-6. Pass proof data to verification flow
+5. Receive proof data
+6. Verify proof through Attestcoin infrastructure
 ```
 
-### Environment Configuration
+The proof-generation and verification flow has now been tested successfully against a real Ethereum Sepolia transaction.
 
-Create a `.env.local` file:
+---
+
+# Environment Configuration
+
+Create:
+
+```text
+.env.local
+```
+
+Example configuration:
 
 ```env
 CREDITCOIN_RPC_URL=https://rpc.cc3-testnet.creditcoin.network
@@ -345,7 +583,9 @@ SOURCE_CHAIN_KEY=1
 SOURCE_CHAIN_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
 ```
 
-> **Never commit `.env.local`, private keys, seed phrases, or other secrets.**
+If a private key is required for local deployment or transaction signing, it must remain local.
+
+> **Never commit `.env.local`, private keys, seed phrases, wallet passwords, or other secrets to GitHub.**
 
 ---
 
@@ -358,8 +598,6 @@ Location:
 ```text
 contracts/source/FinancialActivityEmitter.sol
 ```
-
-The contract records financial activity for borrowers.
 
 Main functions:
 
@@ -379,6 +617,8 @@ ObligationFailureRecorded
 ActivityRecorded
 ```
 
+The contract is deployed on Ethereum Sepolia and has been used to create real source-chain activity.
+
 ---
 
 # AI Risk Engine
@@ -389,7 +629,7 @@ Location:
 agent/risk-engine.ts
 ```
 
-The risk engine calculates a bounded credit recommendation based on financial evidence.
+The risk engine transforms financial evidence into a bounded credit recommendation.
 
 Conceptually:
 
@@ -398,7 +638,7 @@ Repayment History
         +
 Failed Obligations
         +
-Collateral Coverage
+Collateral
         +
 Activity Duration
         +
@@ -422,11 +662,9 @@ Credit Application
     ↓
 Wallet Connection
     ↓
-Evidence Selection
+Evidence
     ↓
-Cross-Chain Evidence
-    ↓
-Attestcoin Verification Layer
+Cross-Chain Verification
     ↓
 AI Credit Agent
     ↓
@@ -460,13 +698,13 @@ The application is built with Next.js and provides a dedicated interface for eac
 └── Transactions
 ```
 
-The interface is designed to make the autonomous decision pipeline visible rather than hiding it behind a single transaction button.
+The interface is designed to make the decision pipeline visible rather than hiding it behind a single transaction button.
 
 ---
 
 # Technology Stack
 
-### Frontend
+## Frontend
 
 * Next.js 16
 * React 19
@@ -474,7 +712,7 @@ The interface is designed to make the autonomous decision pipeline visible rathe
 * Tailwind CSS
 * Zustand
 
-### Blockchain
+## Blockchain
 
 * Solidity
 * Foundry
@@ -482,21 +720,22 @@ The interface is designed to make the autonomous decision pipeline visible rathe
 * Creditcoin Testnet
 * EVM Wallets
 
-### Cross-Chain
+## Cross-Chain
 
 * Attestcoin Protocol
 * `@gluwa/usc-sdk`
 * Attestcoin Proof Builder
 * Creditcoin verification infrastructure
 
-### AI / Decisioning
+## AI / Decisioning
 
 * TypeScript
 * Custom Risk Engine
-* Deterministic Policy Validation
+* Deterministic RiskGuard policies
 
-### Development
+## Development
 
+* Node.js
 * pnpm
 * Foundry
 * forge-std
@@ -551,12 +790,12 @@ autonomous-credit-agent/
 
 ## Prerequisites
 
-Make sure the following are installed:
+Install:
 
 * Node.js
 * pnpm
 * Foundry
-* MetaMask or another EVM wallet
+* MetaMask or another EVM-compatible wallet
 
 The current testnet configuration uses:
 
@@ -583,7 +822,7 @@ Create:
 .env.local
 ```
 
-Then add:
+Add:
 
 ```env
 CREDITCOIN_RPC_URL=https://rpc.cc3-testnet.creditcoin.network
@@ -591,6 +830,8 @@ CREDITCOIN_PROOF_BUILDER_URL=https://prover.cc3-testnet.creditcoin.network/
 SOURCE_CHAIN_KEY=1
 SOURCE_CHAIN_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
 ```
+
+For operations requiring wallet signing, configure the private key only in your local environment.
 
 ---
 
@@ -610,7 +851,7 @@ http://localhost:3000
 
 # Testing
 
-The project uses Foundry for smart contract testing.
+The project uses Foundry for smart-contract testing.
 
 Run:
 
@@ -618,7 +859,7 @@ Run:
 forge test
 ```
 
-The current test suite covers:
+The test suite covers areas including:
 
 * Repayment recording
 * Collateral recording
@@ -631,7 +872,7 @@ The current test suite covers:
 
 # Build
 
-Build the smart contracts with:
+Build the smart contracts:
 
 ```bash
 forge build
@@ -640,8 +881,6 @@ forge build
 ---
 
 # Type Checking
-
-Run:
 
 ```bash
 pnpm exec tsc --noEmit
@@ -665,9 +904,9 @@ Execution
 
 The AI proposes a decision.
 
-RiskGuard evaluates whether that decision satisfies predefined safety constraints.
+RiskGuard evaluates whether the recommendation satisfies predefined safety constraints.
 
-This separation provides a controlled boundary between probabilistic AI reasoning and deterministic financial execution.
+The execution layer is therefore bounded independently of the AI's reasoning.
 
 ---
 
@@ -675,21 +914,23 @@ This separation provides a controlled boundary between probabilistic AI reasonin
 
 Cross-chain financial applications need a trustworthy mechanism for bringing information from one blockchain into another execution environment.
 
-Attestcoin provides the cross-chain verification infrastructure used by this architecture.
+Attestcoin provides the verification infrastructure used by this architecture.
 
-The resulting data pipeline is:
+The demonstrated pipeline is:
 
 ```text
-Source-Chain Activity
+Real Source-Chain Transaction
         ↓
-     Attestcoin
+Source Block Attestation
         ↓
-Verified Evidence
+Attestcoin Proof
         ↓
-   AI Decision
+Creditcoin Verification Precompile
+        ↓
+TRUE
 ```
 
-Attestcoin is therefore a core part of the project's architecture rather than an optional add-on.
+Attestcoin is therefore a core component of the project's trust model rather than an optional integration.
 
 ---
 
@@ -745,32 +986,69 @@ It is designed as a decision-making component inside a controlled financial exec
 
 # Current Prototype Status
 
-### Implemented
+## Implemented
 
-* Next.js product interface
-* Credit application flow
-* EVM wallet connection
-* Financial evidence interface
-* AI risk engine
-* Deterministic RiskGuard logic
-* Credit-line lifecycle
-* Draw and repayment flow
-* Transaction history
-* Financial activity source contract
-* Foundry test suite
-* Attestcoin SDK integration
-* Creditcoin testnet RPC configuration
-* Attestcoin proof-service infrastructure
+* ✅ Next.js product interface
+* ✅ Credit application workflow
+* ✅ EVM wallet connection
+* ✅ Financial evidence interface
+* ✅ AI risk engine
+* ✅ Deterministic RiskGuard logic
+* ✅ Credit-line lifecycle
+* ✅ Draw and repayment workflow
+* ✅ Transaction history
+* ✅ Financial activity source contract
+* ✅ Foundry smart-contract tests
+* ✅ Ethereum Sepolia contract deployment
+* ✅ Real collateral transaction
+* ✅ Real repayment transaction
+* ✅ Creditcoin source-block attestation detection
+* ✅ Attestcoin SDK integration
+* ✅ Real Attestcoin proof generation
+* ✅ Real Attestcoin precompile verification
+* ✅ Verified result: `true`
 
-### In Progress
+## Next Engineering Steps
 
-* Full end-to-end Attestcoin proof verification pipeline
-* Automated verified-evidence ingestion
-* Production-grade Creditcoin smart-contract execution
-* Automated worker flow
-* Additional security hardening
+* ⏳ Connect verified proof generation directly into the application workflow
+* ⏳ Automated verified-evidence ingestion
+* ⏳ Automated worker execution
+* ⏳ Production-grade Creditcoin smart-contract execution
+* ⏳ Additional security hardening
 
-> The current application is a hackathon prototype. UI flows and local prototype execution should not be interpreted as proof of a production lending system.
+> The current application is a hackathon prototype. UI credit-line states and local execution flows should not be interpreted as completed production lending transactions unless accompanied by verifiable on-chain transaction evidence.
+
+---
+
+# Verified Demonstration
+
+The strongest verified path currently demonstrated by the project is:
+
+```text
+Ethereum Sepolia
+      │
+      │ Real repayment transaction
+      ▼
+FinancialActivityEmitter
+      │
+      ▼
+Block 11704112
+      │
+      │ Attested by Creditcoin
+      ▼
+Attestcoin Proof Builder
+      │
+      ▼
+Merkle Proof + Continuity Proof
+      │
+      ▼
+Creditcoin Attestcoin Precompile
+      │
+      ▼
+TRUE
+```
+
+This demonstrates that a real source-chain transaction can be transformed into cryptographically verifiable cross-chain evidence.
 
 ---
 
@@ -778,11 +1056,11 @@ It is designed as a decision-making component inside a controlled financial exec
 
 ### Live Application
 
-[https://autonomous-credit-agent.vercel.app/](https://autonomous-credit-agent.vercel.app/)
+https://autonomous-credit-agent.vercel.app/
 
 ### GitHub
 
-[https://github.com/shahwali-dev/autonomous-credit-agent](https://github.com/shahwali-dev/autonomous-credit-agent)
+https://github.com/shahwali-dev/autonomous-credit-agent
 
 ### Demo Video
 
@@ -792,36 +1070,44 @@ https://youtu.be/lUKRRT1O2_A
 
 # Hackathon
 
-Built for:
-
 ## BUIDL CTC 2026 — BUIDL For The Real World
 
 **Track:** AI
 
-The project focuses on AI-powered credit decisioning using verified cross-chain financial evidence and controlled on-chain execution.
+**Core Ecosystem:** Creditcoin
+
+**Key Protocol:** Attestcoin Protocol
+
+**Focus:** Autonomous Cross-Chain Credit
+
+The project explores how verified cross-chain financial activity can become input to an AI credit agent while keeping execution bounded by deterministic policies.
 
 ---
 
 # Roadmap
 
-### Phase 1 — Hackathon Prototype
+## Phase 1 — Hackathon Prototype
 
 * Cross-chain financial evidence
+* Ethereum Sepolia source contract
 * Attestcoin integration
+* Real Attestcoin proof generation
+* Real Attestcoin verification
 * AI credit decisioning
 * RiskGuard
 * Credit-line management
-* Creditcoin testnet execution flow
+* Creditcoin execution workflow
 
-### Phase 2 — Autonomous Worker
+## Phase 2 — Autonomous Worker
 
 * Source-chain event monitoring
 * Automated proof generation
-* Automated proof submission
+* Automated proof verification
 * Verified evidence ingestion
 * Retry and failure handling
+* End-to-end automated workflow
 
-### Phase 3 — Production Credit Infrastructure
+## Phase 3 — Production Credit Infrastructure
 
 * Production-grade contracts
 * Stronger risk policies
@@ -846,8 +1132,10 @@ Verified Data
       ↓
 Deterministic Safety
       ↓
-Autonomous Execution
+Controlled Execution
 ```
+
+The broader goal is to make financial intelligence **portable across chains while keeping autonomous agents bounded by verifiable rules**.
 
 ---
 
@@ -856,5 +1144,3 @@ Autonomous Execution
 This project is licensed under the **MIT License**.
 
 See the `LICENSE` file for details.
-
----
