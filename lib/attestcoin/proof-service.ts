@@ -2,6 +2,7 @@ import type { JsonRpcApiProvider } from "ethers";
 import {
   chainInfo,
   proofProvider,
+  blockProver,
 } from "@gluwa/usc-sdk";
 
 export interface GenerateProofParams {
@@ -12,13 +13,20 @@ export interface GenerateProofParams {
   sourceChainRpc: JsonRpcApiProvider;
 }
 
-export async function generateAttestcoinProof({
+export interface VerifiedAttestcoinProof {
+  proof: proofProvider.ProofResult;
+  verified: boolean;
+  headerNumber: number;
+  txHash: string;
+}
+
+export async function generateAndVerifyAttestcoinProof({
   txHash,
   chainKey,
   proofBuilderUrl,
   creditcoinRpc,
   sourceChainRpc,
-}: GenerateProofParams): Promise<proofProvider.ProofResult> {
+}: GenerateProofParams): Promise<VerifiedAttestcoinProof> {
   console.log(
     `Waiting for transaction ${txHash} to be mined on source chain...`
   );
@@ -85,5 +93,44 @@ export async function generateAttestcoinProof({
 
   console.log("Proof generation successful!");
 
-  return proof;
+  const prover =
+    new blockProver.PrecompileBlockProver(
+      creditcoinRpc
+    );
+
+  const {
+    headerNumber,
+    txBytes,
+    merkleProof,
+    continuityProof,
+  } = proof.data;
+
+  console.log(
+    `Verifying Attestcoin proof for block ${headerNumber}...`
+  );
+
+  const verified = await prover.verifySingle(
+    chainKey,
+    headerNumber,
+    txBytes,
+    merkleProof,
+    continuityProof
+  );
+
+  if (!verified) {
+    throw new Error(
+      `Attestcoin verification failed for transaction ${txHash}`
+    );
+  }
+
+  console.log(
+    `Attestcoin verification successful: ${verified}`
+  );
+
+  return {
+    proof,
+    verified,
+    headerNumber,
+    txHash,
+  };
 }

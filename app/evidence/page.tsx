@@ -1,13 +1,12 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCreditStore } from "@/lib/store/credit-store";
 
 const activity = [
-  ["01", "Repayment #8", "2 days ago", "$250", "Verified"],
-  ["02", "Repayment #7", "14 days ago", "$250", "Verified"],
-  ["03", "Repayment #6", "27 days ago", "$250", "Verified"],
-  ["04", "Collateral deposit", "41 days ago", "$1,500", "Verified"],
+  ["01", "Repayment #1", "Verified on-chain", "$100", "Verified"],
+  ["02", "Collateral deposit", "Verified on-chain", "$1,499", "Verified"],
 ];
 
 const verificationSteps = [
@@ -40,16 +39,64 @@ export default function EvidencePage() {
     (state) => state.evidence
   );
 
+  const application = useCreditStore(
+    (state) => state.application
+  );
+
   const setEvidence = useCreditStore(
     (state) => state.setEvidence
   );
 
+  const addTransaction = useCreditStore(
+    (state) => state.addTransaction
+  );
+
+  useEffect(() => {
+    console.log("Evidence wallet:", application.walletAddress);
+    const walletAddress = application.walletAddress;
+
+    if (!walletAddress) {
+      return;
+    }
+
+    const loadActivity = async () => {
+      try {
+        const response = await fetch(
+          `/api/source-chain/activity?wallet=${encodeURIComponent(
+            walletAddress
+          )}`
+        );
+
+        const data = await response.json();
+
+        if (!data.success) {
+          throw new Error(
+            data.error || "Failed to load source-chain activity."
+          );
+        }
+
+        setEvidence({
+          repaymentCount: data.activity.repaymentCount,
+          failedObligations: data.activity.failedObligations,
+          collateral: data.activity.collateral,
+          activityDays: data.activity.activityDays,
+        });
+      } catch (error) {
+        console.error(
+          "Failed to load source-chain activity:",
+          error
+        );
+      }
+    };
+
+    loadActivity();
+  }, [application.walletAddress, setEvidence]);
+
   const evidence = [
     {
       title: "Repayment History",
-      value: `${evidenceState.repaymentCount} / ${
-        evidenceState.repaymentCount
-      }`,
+      value: `${evidenceState.repaymentCount} / ${evidenceState.repaymentCount
+        }`,
       detail: "Successful repayments",
       status: evidenceState.verified
         ? "VERIFIED"
@@ -73,15 +120,109 @@ export default function EvidencePage() {
     },
   ];
 
-  const handleAnalyze = () => {
-    setEvidence({
-      verified: true,
-      proofHash:
-        evidenceState.proofHash ||
-        "0x8f24...a91c...73de...4b21",
-    });
+  const [verifying, setVerifying] = useState(false);
+  const [verificationError, setVerificationError] = useState("");
 
-    router.push("/agent");
+  const handleAnalyze = async () => {
+    if (!application.walletAddress) {
+      setVerificationError(
+        "Please connect your wallet on the Apply page before verification."
+      );
+      return;
+    }
+
+    setVerifying(true);
+    setVerificationError("");
+
+    try {
+      // Step 1: Load real source-chain activity
+      const activityResponse = await fetch(
+        `/api/source-chain/activity?wallet=${encodeURIComponent(
+          application.walletAddress
+        )}`
+      );
+
+      const activityData = await activityResponse.json();
+
+      if (!activityData.success) {
+        throw new Error(
+          activityData.error ||
+          "Failed to load source-chain activity."
+        );
+      }
+
+      // Step 2: Get the real repayment transaction
+      const repaymentTxHash =
+        activityData.activity.latestRepaymentTxHash;
+
+      if (!repaymentTxHash) {
+        throw new Error(
+          "No verified repayment transaction was found for this wallet."
+        );
+      }
+
+      // Step 3: Verify that real transaction with Attestcoin
+      const response = await fetch(
+        "/api/attestcoin/verify",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            txHash: repaymentTxHash,
+            walletAddress: application.walletAddress,
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!data.success || !data.verified) {
+        throw new Error(
+          data.error ||
+          "Attestcoin verification failed"
+        );
+      }
+
+      // Step 4: Store verified evidence
+      setEvidence({
+        verified: true,
+        txHash: data.txHash,
+        sourceBlock: data.sourceBlock,
+        verificationStatus: "VERIFIED",
+        proofHash: "",
+      });
+
+      // Step 5: Add verified transaction to activity log
+      addTransaction({
+        id: `evidence-${Date.now()}`,
+        type: "EVIDENCE_VERIFIED",
+        status: "VERIFIED",
+        network: "Ethereum Sepolia + Attestcoin",
+        hash: data.txHash,
+        timestamp: Date.now(),
+      });
+
+      // Step 6: Continue to AI agent
+      router.push("/agent");
+
+    } catch (error) {
+      console.error(error);
+
+      setEvidence({
+        verificationStatus: "FAILED",
+      });
+
+      setVerificationError(
+        error instanceof Error
+          ? error.message
+          : "Verification failed"
+      );
+
+    } finally {
+      setVerifying(false);
+    }
   };
 
   return (
@@ -106,29 +247,26 @@ export default function EvidencePage() {
           </div>
 
           <div
-            className={`rounded-xl border px-4 py-3 ${
-              evidenceState.verified
-                ? "border-emerald-400/20 bg-emerald-400/[0.04]"
-                : "border-amber-400/20 bg-amber-400/[0.04]"
-            }`}
+            className={`rounded-xl border px-4 py-3 ${evidenceState.verified
+              ? "border-emerald-400/20 bg-emerald-400/[0.04]"
+              : "border-amber-400/20 bg-amber-400/[0.04]"
+              }`}
           >
             <div className="text-[10px] uppercase tracking-[0.18em] text-zinc-600">
               Verification status
             </div>
 
             <div
-              className={`mt-1 flex items-center gap-2 text-xs ${
-                evidenceState.verified
-                  ? "text-emerald-300"
-                  : "text-amber-300"
-              }`}
+              className={`mt-1 flex items-center gap-2 text-xs ${evidenceState.verified
+                ? "text-emerald-300"
+                : "text-amber-300"
+                }`}
             >
               <span
-                className={`h-1.5 w-1.5 rounded-full ${
-                  evidenceState.verified
-                    ? "bg-emerald-400"
-                    : "bg-amber-400"
-                }`}
+                className={`h-1.5 w-1.5 rounded-full ${evidenceState.verified
+                  ? "bg-emerald-400"
+                  : "bg-amber-400"
+                  }`}
               />
 
               {evidenceState.verified
@@ -151,11 +289,10 @@ export default function EvidencePage() {
                 </div>
 
                 <span
-                  className={`rounded-md border px-2 py-1 text-[9px] ${
-                    item.status === "VERIFIED"
-                      ? "border-emerald-400/20 bg-emerald-400/5 text-emerald-300"
-                      : "border-amber-400/20 bg-amber-400/5 text-amber-300"
-                  }`}
+                  className={`rounded-md border px-2 py-1 text-[9px] ${item.status === "VERIFIED"
+                    ? "border-emerald-400/20 bg-emerald-400/5 text-emerald-300"
+                    : "border-amber-400/20 bg-amber-400/5 text-amber-300"
+                    }`}
                 >
                   {item.status}
                 </span>
@@ -179,7 +316,7 @@ export default function EvidencePage() {
             <div className="flex items-center justify-between">
               <div>
                 <div className="text-sm font-semibold">
-                  Verified activity
+                  On-chain activity
                 </div>
 
                 <div className="mt-1 text-xs text-zinc-600">
@@ -188,7 +325,7 @@ export default function EvidencePage() {
               </div>
 
               <span className="rounded-lg border border-cyan-400/20 bg-cyan-400/5 px-2.5 py-1 text-[10px] text-cyan-300">
-                4 EVENTS
+                2 EVENTS
               </span>
             </div>
 
@@ -254,9 +391,43 @@ export default function EvidencePage() {
                 Cryptographic proof
               </div>
 
-              <div className="mt-4 break-all font-mono text-[10px] leading-5 text-zinc-600">
-                {evidenceState.proofHash ||
-                  "Proof pending Attestcoin verification"}
+              <div className="mt-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-zinc-600">
+                    Proof status
+                  </span>
+
+                  <span
+                    className={`font-mono text-[10px] ${evidenceState.verified
+                      ? "text-emerald-300"
+                      : "text-zinc-500"
+                      }`}
+                  >
+                    {evidenceState.verified
+                      ? "PROOF GENERATED"
+                      : "PENDING"}
+                  </span>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-[10px] text-zinc-600">
+                    Source block
+                  </span>
+
+                  <span className="font-mono text-[10px] text-zinc-400">
+                    {evidenceState.sourceBlock ?? "—"}
+                  </span>
+                </div>
+
+                <div>
+                  <div className="text-[10px] text-zinc-600">
+                    Source transaction
+                  </div>
+
+                  <div className="mt-1 break-all font-mono text-[9px] leading-5 text-zinc-500">
+                    {evidenceState.txHash || "—"}
+                  </div>
+                </div>
               </div>
 
               <div className="mt-5 flex items-center justify-between border-t border-white/5 pt-4">
@@ -265,11 +436,10 @@ export default function EvidencePage() {
                 </span>
 
                 <span
-                  className={`text-[10px] font-medium ${
-                    evidenceState.verified
-                      ? "text-emerald-300"
-                      : "text-amber-300"
-                  }`}
+                  className={`text-[10px] font-medium ${evidenceState.verified
+                    ? "text-emerald-300"
+                    : "text-amber-300"
+                    }`}
                 >
                   {evidenceState.verified
                     ? "VALID"
@@ -344,13 +514,12 @@ export default function EvidencePage() {
                       </span>
 
                       <span
-                        className={`h-2 w-2 rounded-full ${
-                          evidenceState.verified
+                        className={`h-2 w-2 rounded-full ${evidenceState.verified
+                          ? "bg-emerald-400"
+                          : index === 0
                             ? "bg-emerald-400"
-                            : index === 0
-                              ? "bg-emerald-400"
-                              : "bg-zinc-700"
-                        }`}
+                            : "bg-zinc-700"
+                          }`}
                       />
                     </div>
 
@@ -365,10 +534,10 @@ export default function EvidencePage() {
 
                   {index <
                     verificationSteps.length - 1 && (
-                    <div className="absolute right-[-10px] top-1/2 hidden text-zinc-700 md:block">
-                      →
-                    </div>
-                  )}
+                      <div className="absolute right-[-10px] top-1/2 hidden text-zinc-700 md:block">
+                        →
+                      </div>
+                    )}
                 </div>
               )
             )}
@@ -399,12 +568,15 @@ export default function EvidencePage() {
             </div>
 
             <button
+              disabled={verifying}
               onClick={handleAnalyze}
               className="shrink-0 rounded-xl bg-cyan-300 px-5 py-3 text-sm font-semibold text-black transition hover:bg-cyan-200"
             >
-              {evidenceState.verified
-                ? "Continue to AI Agent →"
-                : "Verify & Analyze with AI →"}
+              {verifying
+                ? "Verifying Attestcoin..."
+                : evidenceState.verified
+                  ? "Continue to AI Agent →"
+                  : "Verify & Analyze with AI →"}
             </button>
           </div>
         </section>
