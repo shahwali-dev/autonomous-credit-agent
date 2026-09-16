@@ -1,6 +1,8 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { validateRiskGuard } from "@/lib/engine/riskguard";
 import { useCreditStore } from "@/lib/store/credit-store";
 
 const executionSteps = [
@@ -11,6 +13,8 @@ const executionSteps = [
 ];
 
 export default function DecisionPage() {
+  const [executing, setExecuting] = useState(false);
+  const [executionError, setExecutionError] = useState("");
   const router = useRouter();
 
   const aiDecision = useCreditStore((state) => state.aiDecision);
@@ -20,6 +24,50 @@ export default function DecisionPage() {
   const executeCredit = useCreditStore(
     (state) => state.executeCredit
   );
+  const handleExecute = async () => {
+    if (!riskGuardPassed || !aiDecision) return;
+
+    setExecuting(true);
+    setExecutionError("");
+
+    try {
+      const response = await fetch("/api/riskguard/validate", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          amount: aiDecision.recommendedAmount,
+          durationDays: aiDecision.recommendedDuration,
+          collateral: application.collateral,
+          evidenceVerified: evidence.verified,
+          risk: aiDecision.risk,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!data.success || !data.validated) {
+        throw new Error(
+          data.error || "RiskGuard validation failed."
+        );
+      }
+
+      executeCredit();
+      router.push("/credit-lines");
+    } catch (error) {
+      console.error("RiskGuard execution failed:", error);
+
+      setExecutionError(
+        error instanceof Error
+          ? error.message
+          : "RiskGuard validation failed."
+      );
+    } finally {
+      setExecuting(false);
+    }
+  };
+
   const decisionFactors = [
     [
       "Risk level",
@@ -46,58 +94,17 @@ export default function DecisionPage() {
       `$${application.collateral?.toLocaleString() ?? "0"}`,
     ],
   ];
-  const riskGuardChecks = {
-    maxCreditExposure:
-      (aiDecision?.recommendedAmount ?? 0) <= 5000,
+  const riskGuardResult = validateRiskGuard(
+    aiDecision,
+    application,
+    evidence
+  );
 
-    collateralCoverage:
-      application.collateral >=
-      (aiDecision?.recommendedAmount ?? 0) * 0.5,
+  const riskGuardPassed = riskGuardResult.passed;
 
-    maxDuration:
-      (aiDecision?.recommendedDuration ?? 0) <= 90,
-
-    evidenceVerified:
-      evidence.verified,
-
-    riskThreshold:
-      aiDecision?.risk === "LOW" ||
-      aiDecision?.risk === "MEDIUM",
-  };
-
-  const riskGuardPassed =
-    Object.values(riskGuardChecks).every(Boolean);
-  const policyChecks = [
-    [
-      "Maximum credit exposure",
-      `$${aiDecision?.recommendedAmount?.toLocaleString() ?? "0"} / $5,000`,
-      riskGuardChecks.maxCreditExposure ? "PASS" : "FAIL",
-    ],
-    [
-      "Collateral coverage",
-      `${Math.round(
-        ((application.collateral ?? 0) /
-          (aiDecision?.recommendedAmount || 1)) *
-        100
-      )}%`,
-      riskGuardChecks.collateralCoverage ? "PASS" : "FAIL",
-    ],
-    [
-      "Maximum duration",
-      `${aiDecision?.recommendedDuration ?? 0} / 90 days`,
-      riskGuardChecks.maxDuration ? "PASS" : "FAIL",
-    ],
-    [
-      "Evidence verification",
-      evidence.verified ? "Attestcoin VALID" : "NOT VERIFIED",
-      riskGuardChecks.evidenceVerified ? "PASS" : "FAIL",
-    ],
-    [
-      "Risk threshold",
-      `${aiDecision?.risk ?? "PENDING"} ≤ MEDIUM`,
-      riskGuardChecks.riskThreshold ? "PASS" : "FAIL",
-    ],
-  ];
+  const policyChecks = riskGuardResult.checks.map(
+    (check) => [check.name, check.value, check.passed ? "PASS" : "FAIL"] as const
+  );
 
   return (
     <main className="min-h-screen bg-[#07090d] text-white">
@@ -311,11 +318,31 @@ export default function DecisionPage() {
             </div>
 
             {[
-              ["Credit amount", "$1,000", "≤ $5,000"],
-              ["Duration", "30 days", "≤ 90 days"],
-              ["Collateral", "$1,500", "≥ $500"],
-              ["Risk", "LOW", "LOW / MEDIUM"],
-              ["Evidence", "Verified", "Required"],
+              [
+                "Credit amount",
+                `$${aiDecision?.recommendedAmount?.toLocaleString() ?? "0"}`,
+                "≤ $5,000",
+              ],
+              [
+                "Duration",
+                `${aiDecision?.recommendedDuration ?? 0} days`,
+                "≤ 90 days",
+              ],
+              [
+                "Collateral",
+                `$${evidence.collateral?.toLocaleString() ?? "0"}`,
+                "≥ 50% coverage",
+              ],
+              [
+                "Risk",
+                aiDecision?.risk ?? "PENDING",
+                "LOW / MEDIUM",
+              ],
+              [
+                "Evidence",
+                evidence.verified ? "Verified" : "Not verified",
+                "Required",
+              ],
             ].map(([label, recommendation, limit]) => (
               <div
                 key={label}
@@ -410,49 +437,59 @@ export default function DecisionPage() {
               </div>
 
               <h2 className="mt-3 text-xl font-semibold">
-                All safety checks passed.
+                {riskGuardPassed
+                  ? "All safety checks passed."
+                  : "Credit execution blocked."}
               </h2>
 
               <p className="mt-2 max-w-2xl text-xs leading-6 text-zinc-600">
-                RiskGuard has validated the AI-generated credit terms. The
-                credit line is now ready for bounded execution on Creditcoin.
+                {riskGuardPassed
+                  ? "RiskGuard has validated the AI-generated credit terms. The credit line is now ready for bounded execution on Creditcoin."
+                  : riskGuardResult.reason}
               </p>
             </div>
 
             <button
-              disabled={!riskGuardPassed}
-              onClick={() => {
-                if (!riskGuardPassed) return;
-
-                executeCredit();
-                router.push("/credit-lines");
-              }}
-              className={`shrink-0 rounded-xl px-6 py-4 text-sm font-semibold transition ${riskGuardPassed
+              disabled={!riskGuardPassed || executing}
+              onClick={handleExecute}
+              className={`shrink-0 rounded-xl px-6 py-4 text-sm font-semibold transition ${riskGuardPassed && !executing
                 ? "bg-cyan-300 text-black hover:bg-cyan-200"
                 : "cursor-not-allowed bg-zinc-800 text-zinc-600"
                 }`}
             >
-              {riskGuardPassed
-                ? "Execute Credit on Creditcoin →"
-                : "Execution Blocked by RiskGuard"}
+              {executing
+                ? "Validating RiskGuard..."
+                : riskGuardPassed
+                  ? "Execute Credit on Creditcoin →"
+                  : "Execution Blocked by RiskGuard"}
             </button>
           </div>
 
+          {executionError && (
+            <div className="mt-5 rounded-xl border border-red-400/20 bg-red-400/[0.04] px-4 py-3 text-xs text-red-300">
+              {executionError}
+            </div>
+          )}
+
           <div className="mt-6 flex flex-wrap gap-3 border-t border-white/5 pt-5 text-[10px] text-zinc-600">
             <span className="rounded-md border border-white/5 px-3 py-1.5">
-              ✓ Attestcoin evidence verified
+              {evidence.verified ? "✓" : "✕"} Attestcoin evidence{" "}
+              {evidence.verified ? "verified" : "not verified"}
             </span>
 
             <span className="rounded-md border border-white/5 px-3 py-1.5">
-              ✓ AI assessment complete
+              {aiDecision ? "✓" : "✕"} AI assessment{" "}
+              {aiDecision ? "complete" : "pending"}
             </span>
 
             <span className="rounded-md border border-white/5 px-3 py-1.5">
-              ✓ RiskGuard approved
+              {riskGuardPassed ? "✓" : "✕"} RiskGuard{" "}
+              {riskGuardPassed ? "approved" : "blocked"}
             </span>
 
             <span className="rounded-md border border-white/5 px-3 py-1.5">
-              ✓ Credit terms within policy
+              {riskGuardPassed ? "✓" : "✕"} Credit terms{" "}
+              {riskGuardPassed ? "within policy" : "outside policy"}
             </span>
           </div>
         </section>

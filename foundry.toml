@@ -3,6 +3,7 @@ out = "out"
 src = "contracts"
 test = "tests"
 libs = ["lib"]
+remappings = ["@gluwa/asc-contracts/=node_modules/@gluwa/asc-contracts/"]
 
 solc_version = "0.8.30"
 optimizer = true
@@ -13,3 +14,4 @@ verbosity = 2
 
 [lint]
 lint_on_build = false
+

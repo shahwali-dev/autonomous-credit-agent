@@ -43,3 +43,9 @@ next-env.d.ts
 # Foundry
 /cache/
 /out/
+
+# Foundry deployment artifacts
+/broadcast/
+
+# Backup files
+*.bak
