@@ -1,7 +1,7 @@
 # Autonomous Cross-Chain Credit Agent
 
 <p align="center">
-  <strong>AI-powered cross-chain credit decisioning using cryptographically verified financial evidence, Attestcoin, RiskGuard, and Creditcoin.</strong>
+  <strong>AI-powered cross-chain credit infrastructure that turns cryptographically verified financial activity into real Creditcoin credit execution.</strong>
 </p>
 
 <p align="center">
@@ -17,6 +17,7 @@
   <img src="https://img.shields.io/badge/Track-AI-purple" alt="AI Track">
   <img src="https://img.shields.io/badge/Creditcoin-Testnet-orange" alt="Creditcoin Testnet">
   <img src="https://img.shields.io/badge/Attestcoin-Verified-success" alt="Attestcoin Verified">
+  <img src="https://img.shields.io/badge/Loan%20%231-Funded-brightgreen" alt="Loan 1 Funded">
   <img src="https://img.shields.io/badge/License-MIT-green" alt="MIT License">
 </p>
 
@@ -26,36 +27,33 @@
 
 * [Overview](#overview)
 * [Judge Verification — Start Here](#judge-verification--start-here)
-* [Verified Technical Milestone](#verified-technical-milestone)
+* [The Core Achievement](#the-core-achievement)
 * [Architecture](#architecture)
 * [The Problem](#the-problem)
 * [The Solution](#the-solution)
 * [Live Application](#live-application)
 * [Network Configuration](#network-configuration)
-* [Deployment & Contract Addresses](#deployment--contract-addresses)
-* [Real Source-Chain Activity](#real-source-chain-activity)
+* [Deployed Contracts](#deployed-contracts)
+* [Real Borrower Evidence](#real-borrower-evidence)
 * [Attestcoin Integration](#attestcoin-integration)
-* [Real Attestcoin Proof Verification](#real-attestcoin-proof-verification)
 * [CreditASC](#creditasc)
-* [Real Cross-Chain Proof Executions](#real-cross-chain-proof-executions)
-* [Verified On-Chain Evidence State](#verified-on-chain-evidence-state)
 * [AI Credit Agent](#ai-credit-agent)
 * [RiskGuard](#riskguard)
-* [Creditcoin Execution Status](#creditcoin-execution-status)
-* [Demo Values vs Verified Blockchain Evidence](#demo-values-vs-verified-blockchain-evidence)
-* [End-to-End Workflow](#end-to-end-workflow)
-* [Why Attestcoin](#why-attestcoin)
-* [Why Creditcoin](#why-creditcoin)
-* [Security Philosophy](#security-philosophy)
-* [Smart Contracts](#smart-contracts)
-* [Attestcoin Implementation](#attestcoin-implementation)
-* [Project Structure](#project-structure)
+* [Real Creditcoin Loan Infrastructure](#real-creditcoin-loan-infrastructure)
+* [Loan #1 — Complete On-Chain Lifecycle](#loan-1--complete-on-chain-lifecycle)
+* [Funding Proof — Attestcoin → Creditcoin](#funding-proof--attestcoin--creditcoin)
+* [Final Loan Status](#final-loan-status)
+* [Complete Evidence Chain](#complete-evidence-chain)
+* [Security Architecture](#security-architecture)
+* [Frontend & User Experience](#frontend--user-experience)
 * [Technology Stack](#technology-stack)
+* [Project Structure](#project-structure)
 * [Getting Started](#getting-started)
 * [Testing](#testing)
-* [Reproducing the Verified Proof Flow](#reproducing-the-verified-proof-flow)
-* [Current Status](#current-status)
-* [Roadmap](#roadmap)
+* [Reproducing the Proof Flow](#reproducing-the-proof-flow)
+* [Verification Matrix](#verification-matrix)
+* [Current System Status](#current-system-status)
+* [Production Extensions](#production-extensions)
 * [Vision](#vision)
 * [Links](#links)
 * [Hackathon](#hackathon)
@@ -65,294 +63,469 @@
 
 # Overview
 
-**Autonomous Cross-Chain Credit Agent** is an AI-powered credit infrastructure prototype that transforms financial activity from one blockchain into:
+**Autonomous Cross-Chain Credit Agent** is an AI-powered credit infrastructure prototype that connects:
 
 ```text
-Real Source-Chain Activity
+Ethereum Sepolia
         ↓
-Cryptographically Verified Cross-Chain Evidence
+Real Financial Activity
         ↓
-Persistent Creditcoin State
+Attestcoin Cryptographic Verification
         ↓
-AI Credit Intelligence
+Creditcoin Verified Evidence
         ↓
-Deterministic Risk Validation
+AI Credit Decision
         ↓
-Controlled Credit Execution
+Deterministic RiskGuard
+        ↓
+Real Creditcoin Loan Execution
+        ↓
+Attestcoin Funding Proof
+        ↓
+On-Chain Funded Loan
 ```
 
-The project combines:
-
-* Ethereum Sepolia financial activity
-* Attestcoin Protocol
-* Creditcoin native proof verification
-* A custom Creditcoin ASC contract
-* AI-driven credit risk assessment
-* Deterministic RiskGuard policies
-* Smart-contract-based execution infrastructure
+The project demonstrates how financial activity originating on one blockchain can become trusted evidence and ultimately support a real credit execution flow on another blockchain.
 
 The core design principle is:
 
-> **AI provides intelligence. Deterministic code provides authority.**
+> **Attestcoin provides the truth. AI provides the intelligence. RiskGuard provides deterministic safety. Creditcoin provides execution.**
 
 ---
 
 # Judge Verification — Start Here
 
-The fastest way to verify the core technical claim is to follow one of the two real proof trails below.
+If you are a judge and want to verify the project quickly, the following links provide the shortest path from source-chain activity to the final funded Creditcoin loan.
 
-## 60–90 Second Verification Path
+## 1. Source-chain financial activity
 
-### 1. Verify the real source transaction
+### Borrower collateral
 
-**Collateral transaction — Ethereum Sepolia**
-
-[0x64626b7dd5cb0705535c87d25688126790a118eedbf107d6534b0053d9e32de1](https://sepolia.etherscan.io/tx/0x64626b7dd5cb0705535c87d25688126790a118eedbf107d6534b0053d9e32de1)
-
-* Block: `11704100`
-* Status: `SUCCESS`
-* Event: `CollateralRecorded`
-* Amount: `1499`
-
-**Repayment transaction — Ethereum Sepolia**
-
-[0x0e70933bde51ea11af6f153d1f0489d83a8fb7a363697512807644e059241eb5](https://sepolia.etherscan.io/tx/0x0e70933bde51ea11af6f153d1f0489d83a8fb7a363697512807644e059241eb5)
-
-* Block: `11704112`
-* Status: `SUCCESS`
-* Event: `RepaymentRecorded`
-* Repayment ID: `1`
-* Amount: `100`
-
-### 2. Verify the Creditcoin ASC deployment
-
-[CreditASC contract — Creditcoin Testnet](https://creditcoin-testnet.blockscout.com/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d)
-
-* Chain ID: `102031`
-* Deployment block: `5497977`
-
-### 3. Verify the collateral proof execution
-
-[CreditASC collateral execution — Creditcoin Blockscout](https://creditcoin-testnet.blockscout.com/tx/0x87596ed99f64cf99f207393f26e47d7d1fd81effa9a7aa9e27ccee6b191edd03)
-
-This transaction corresponds to:
+[View real collateral transaction on Ethereum Sepolia](https://sepolia.etherscan.io/tx/0xac5418a7f9293ad89de92ffd7c46066cb4292f9e8d26f0a50f6886953206f34a)
 
 ```text
-Ethereum collateral transaction
-        ↓
-Attestcoin proof
-        ↓
-Native verification
-        ↓
-CreditASC.execute(action = 2)
-        ↓
-collateral = 1499
+Event:
+CollateralRecorded
+
+Amount:
+1499
+
+Block:
+11725413
+
+Status:
+SUCCESS
 ```
 
-Creditcoin block:
+### Borrower repayment
+
+[View real repayment transaction on Ethereum Sepolia](https://sepolia.etherscan.io/tx/0x5949ebb3b25e8776297bfcff0b9fd953d34b6a552a27094e4786ea109210136c)
 
 ```text
-5498184
+Event:
+RepaymentRecorded
+
+Repayment ID:
+1
+
+Amount:
+100
+
+Block:
+11725417
+
+Status:
+SUCCESS
 ```
-
-### 4. Verify the repayment proof execution
-
-[CreditASC repayment execution — Creditcoin Blockscout](https://creditcoin-testnet.blockscout.com/tx/0xa85744feee9b5d9c01b853667cd8b83dfc613c0eaa42efb5f4ac87644814b5f5)
-
-This transaction corresponds to:
-
-```text
-Ethereum repayment transaction
-        ↓
-Attestcoin proof
-        ↓
-Native verification
-        ↓
-CreditASC.execute(action = 1)
-        ↓
-repaymentCount = 1
-```
-
-Creditcoin block:
-
-```text
-5498192
-```
-
-### 5. Verify the resulting CreditASC state
-
-The resulting on-chain evidence state is:
-
-```text
-repaymentCount    = 1
-failedObligations = 0
-collateral        = 1499
-```
-
-This is the core independently verifiable technical milestone of the project.
 
 ---
 
-# Verified Technical Milestone
+# 2. Creditcoin verified evidence
 
-The strongest currently demonstrated path is:
+The deployed CreditASC contract processes Attestcoin proofs and stores verified financial evidence on Creditcoin.
+
+[View CreditASC on Creditcoin Blockscout](https://creditcoin-testnet.blockscout.com/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d)
 
 ```text
-Ethereum Sepolia
-      │
-      │ Real Financial Events
-      ▼
-FinancialActivityEmitter
-      │
-      │ Real Transactions
-      ▼
-Attestcoin Proof Builder
-      │
-      ├── Merkle Proof
-      └── Continuity Proof
-      │
-      ▼
-Creditcoin Native Verification
-      │
-      │ verifySingle() = true
-      ▼
-CreditASC.execute()
-      │
-      ▼
-Persistent Creditcoin State
-      │
-      ├── Repayments: 1
-      ├── Failed Obligations: 0
-      └── Collateral: 1499
+Chain ID:
+102031
+
+CreditASC:
+0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d
+
+Deployment block:
+5497977
 ```
 
-The important point is that the cross-chain evidence is not represented only by a frontend boolean.
+Historical verified proof executions are also available:
 
-The proof is:
+### Verified collateral
 
-1. Generated from a real source-chain transaction.
-2. Cryptographically verified through Creditcoin's native Attestcoin infrastructure.
-3. Submitted to the deployed `CreditASC` contract.
-4. Used to update persistent on-chain evidence state.
+[Creditcoin collateral proof execution](https://creditcoin-testnet.blockscout.com/tx/0x87596ed99f64cf99f207393f26e47d7d1fd81effa9a7aa9e27ccee6b191edd03)
+
+```text
+Action:
+2 — COLLATERAL
+
+Creditcoin block:
+5498184
+
+Verified collateral:
+1499
+```
+
+### Verified repayment
+
+[Creditcoin repayment proof execution](https://creditcoin-testnet.blockscout.com/tx/0xa85744feee9b5d9c01b853667cd8b83dfc613c0eaa42efb5f4ac87644814b5f5)
+
+```text
+Action:
+1 — REPAYMENT
+
+Creditcoin block:
+5498192
+
+Verified repayment count:
+1
+```
+
+---
+
+# 3. Real Creditcoin loan registration
+
+Loan #1 was registered on the deployed `ASCLoanManager`.
+
+[View Loan #1 registration on Creditcoin](https://creditcoin-testnet.blockscout.com/tx/0x4a6b7de43c20969703a1b84170c70e2abd59f07c8cbb5a4287197e068c310d40)
+
+```text
+Loan ID:
+1
+
+Loan amount:
+700 TEST
+
+Interest:
+5%
+
+Expected repayment:
+735 TEST
+
+Duration:
+~30 days
+
+Status after registration:
+Created
+```
+
+---
+
+# 4. Real source-chain loan funding
+
+The official Creditcoin loan flow was used to fund the loan through the source-chain loan contract.
+
+### Register funding
+
+[Register Loan #1 funding](https://eth-sepolia.blockscout.com/tx/0x109695384f1b63ecc1228eb7087cc066e23ac8965a24930b8537b238b86d1aac)
+
+### ERC20 approval
+
+[View TEST token approval](https://eth-sepolia.blockscout.com/tx/0x180a31de7c5f1c33dfbf0aeb44b0652bad134ff959c258658726d7b25865b330)
+
+### Actual 700 TEST funding
+
+[View real Loan #1 funding transaction](https://eth-sepolia.blockscout.com/tx/0xd303577e6021927677745a32e432a6f58e9446e48991a7e0364ef349544426c7)
+
+```text
+Loan:
+#1
+
+Amount:
+700 TEST
+
+From:
+Lender
+
+To:
+Borrower
+
+Status:
+SUCCESS
+```
+
+---
+
+# 5. Attestcoin funding proof
+
+The source-chain funding transaction was then processed through Attestcoin.
+
+[View funding proof submission on Creditcoin](https://creditcoin-testnet.blockscout.com/tx/0xacd75d9c33b64d58ffe07ecc6dff8b5085220a1d2496f26959409619b47540e8)
+
+```text
+Source block:
+11725463
+
+Attestcoin proof:
+Generated successfully
+
+Proof submission:
+SUCCESS
+
+Creditcoin block:
+5505285
+```
+
+---
+
+# 6. Final on-chain loan status
+
+The final on-chain read from `ASCLoanManager.getLoanOrder(1)` returned:
+
+```text
+Loan ID:
+1
+
+Status:
+1
+
+Status meaning:
+Funded
+
+Loan amount:
+700000000000000000000
+
+Repaid amount:
+0
+```
+
+Therefore:
+
+> **Loan #1 is definitively `Funded` on Creditcoin Testnet.**
+
+This is not a frontend status.
+
+It is the result of the deployed Creditcoin loan manager's actual on-chain state.
+
+---
+
+# The Core Achievement
+
+The project now demonstrates the following complete technical pipeline:
+
+```text
+┌──────────────────────────────────────────────┐
+│ Ethereum Sepolia                             │
+│                                              │
+│ Real borrower financial activity             │
+│                                              │
+│ Collateral = 1499                            │
+│ Repayment = 100                              │
+└──────────────────────┬───────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────┐
+│ Attestcoin                                   │
+│                                              │
+│ Block attestation                            │
+│ Transaction proof                            │
+│ Merkle proof                                 │
+│ Continuity proof                             │
+└──────────────────────┬───────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────┐
+│ Creditcoin Native Verification               │
+│                                              │
+│ Cryptographic proof verification             │
+└──────────────────────┬───────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────┐
+│ CreditASC                                    │
+│                                              │
+│ Verified evidence → persistent state         │
+└──────────────────────┬───────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────┐
+│ AI Credit Agent                              │
+│                                              │
+│ Risk assessment                              │
+│ Credit recommendation                        │
+│ Duration recommendation                      │
+└──────────────────────┬───────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────┐
+│ RiskGuard                                    │
+│                                              │
+│ Deterministic policy validation              │
+└──────────────────────┬───────────────────────┘
+                       │
+                       ▼
+┌──────────────────────────────────────────────┐
+│ Creditcoin Loan Infrastructure               │
+│                                              │
+│ Loan registration                            │
+│ Source-chain funding                         │
+│ Funding proof                                │
+│                                              │
+│ Loan #1 = FUNDED                             │
+└──────────────────────────────────────────────┘
+```
+
+The important distinction is that the system is not merely an AI dashboard.
+
+It contains real smart contracts, real source-chain transactions, real Attestcoin proofs, real Creditcoin transactions, and a real funded loan state.
 
 ---
 
 # Architecture
 
 ```text
-┌─────────────────────────────────────────────┐
-│                 SOURCE CHAIN                │
-│                                             │
-│   Repayments   Collateral   Obligations     │
-│          Financial Activity Events          │
-└──────────────────────┬──────────────────────┘
-                       │
-                       │ Real Transaction
-                       ▼
-┌─────────────────────────────────────────────┐
-│                 ATTESTCOIN                  │
-│                                             │
-│   Block Attestation                         │
-│   Proof Builder                             │
-│   Transaction Proof                         │
-│   Merkle Proof                              │
-│   Continuity Proof                          │
-└──────────────────────┬──────────────────────┘
-                       │
-                       │ Cryptographic Verification
-                       ▼
-┌─────────────────────────────────────────────┐
-│                  CREDITCOIN                 │
-│                                             │
-│                CreditASC                    │
-│                                             │
-│   ASCBase.execute()                         │
-│   Native Attestcoin Verification            │
-│   Source Receipt Decoding                   │
-│   Evidence Extraction                       │
-└──────────────────────┬──────────────────────┘
-                       │
-                       │ Persistent Verified State
-                       ▼
-┌─────────────────────────────────────────────┐
-│              VERIFIED EVIDENCE              │
-│                                             │
-│   Repayments                                │
-│   Failed Obligations                        │
-│   Collateral                                │
-│   Activity Timestamps                       │
-└──────────────────────┬──────────────────────┘
-                       │
-                       ▼
-┌─────────────────────────────────────────────┐
-│              AI CREDIT AGENT                │
-│                                             │
-│   Risk Assessment                           │
-│   Confidence                                │
-│   Credit Recommendation                     │
-│   Duration Recommendation                   │
-│   Decision Reasoning                         │
-└──────────────────────┬──────────────────────┘
-                       │
-                       ▼
-┌─────────────────────────────────────────────┐
-│                  RISKGUARD                  │
-│                                             │
-│   Maximum Exposure                          │
-│   Collateral Coverage                       │
-│   Maximum Duration                          │
-│   Evidence Verification                     │
-│   Risk Threshold                            │
-└──────────────────────┬──────────────────────┘
-                       │
-                       ▼
-┌─────────────────────────────────────────────┐
-│                 CREDITCOIN                  │
-│                                             │
-│   Controlled Credit Execution               │
-│   Credit Line Management                    │
-└─────────────────────────────────────────────┘
+                    ┌──────────────────────┐
+                    │   Ethereum Sepolia   │
+                    │                      │
+                    │ Financial Activity   │
+                    │ Collateral           │
+                    │ Repayments           │
+                    │ Obligations          │
+                    └──────────┬───────────┘
+                               │
+                               │ Real transaction
+                               ▼
+                    ┌──────────────────────┐
+                    │      Attestcoin      │
+                    │                      │
+                    │ Block Attestation    │
+                    │ Transaction Proof    │
+                    │ Merkle Proof         │
+                    │ Continuity Proof     │
+                    └──────────┬───────────┘
+                               │
+                               │ Cryptographic verification
+                               ▼
+                    ┌──────────────────────┐
+                    │     Creditcoin       │
+                    │                      │
+                    │ CreditASC            │
+                    │ Native Verification  │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │ Verified Evidence    │
+                    │                      │
+                    │ Repayments           │
+                    │ Collateral           │
+                    │ Obligations          │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │    AI Credit Agent   │
+                    │                      │
+                    │ Risk                 │
+                    │ Confidence           │
+                    │ Credit Amount        │
+                    │ Duration             │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │      RiskGuard       │
+                    │                      │
+                    │ Deterministic Policy │
+                    │ Validation            │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │ Creditcoin Loan      │
+                    │ Infrastructure       │
+                    │                      │
+                    │ Register             │
+                    │ Fund                 │
+                    │ Prove                │
+                    │ Execute              │
+                    └──────────┬───────────┘
+                               │
+                               ▼
+                    ┌──────────────────────┐
+                    │     Loan #1          │
+                    │                      │
+                    │ 700 TEST             │
+                    │ Status: FUNDED       │
+                    └──────────────────────┘
 ```
 
 ---
 
 # The Problem
 
-On-chain financial history is increasingly distributed across multiple blockchain ecosystems.
+On-chain financial history is distributed across blockchain ecosystems.
 
-A borrower may have:
+A borrower can have:
 
-* Repayment history on one chain
-* Collateral on another
-* Failed obligations somewhere else
-* Financial activity that is invisible to a destination credit protocol
+* repayment history on Ethereum
+* collateral on another chain
+* failed obligations elsewhere
+* valuable financial activity that a destination lending protocol cannot natively trust
 
-This creates several technical problems:
+Traditional applications often solve this through centralized APIs or manually supplied data.
 
-1. How can activity from another blockchain be verified?
-2. How can verified evidence become persistent state on the destination chain?
-3. How can AI consume that evidence?
-4. How can an autonomous AI agent be prevented from having unrestricted financial authority?
-
-The project explores:
+That creates a trust problem:
 
 ```text
-Cross-Chain Activity
+Who says the financial history is real?
+```
+
+This project explores a different architecture:
+
+```text
+Source-chain activity
         ↓
-Verified Evidence
+Cryptographic proof
         ↓
-AI Credit Intelligence
+Destination-chain verification
         ↓
-Deterministic Policy
+AI decisioning
         ↓
-Controlled Execution
+Deterministic authorization
+        ↓
+On-chain execution
 ```
 
 ---
 
 # The Solution
 
-The system separates the credit process into distinct layers:
+The system divides responsibility into explicit layers.
+
+## 1. Observe
+
+Read real source-chain financial activity.
+
+## 2. Verify
+
+Use Attestcoin to cryptographically prove that the source-chain transaction occurred.
+
+## 3. Record
+
+Convert verified events into persistent Creditcoin evidence.
+
+## 4. Analyze
+
+The AI credit agent evaluates the verified evidence.
+
+## 5. Validate
+
+RiskGuard applies deterministic policy constraints.
+
+## 6. Execute
+
+Creditcoin loan infrastructure performs the actual credit operation.
+
+This creates:
 
 ```text
 OBSERVE
@@ -363,48 +536,24 @@ RECORD
    ↓
 ANALYZE
    ↓
-DECIDE
-   ↓
 VALIDATE
    ↓
 EXECUTE
 ```
 
-Each component has a defined responsibility.
-
-### Attestcoin
-
-Provides cryptographically verified cross-chain evidence.
-
-### CreditASC
-
-Processes verified Attestcoin proofs and converts proven source-chain events into persistent verified evidence on Creditcoin.
-
-### AI Credit Agent
-
-Interprets verified financial evidence and produces a structured credit recommendation.
-
-### RiskGuard
-
-Applies deterministic policies that constrain what the AI is allowed to request.
-
-### Creditcoin
-
-Provides the destination environment for controlled credit execution.
-
 ---
 
 # Live Application
 
-**Live Demo**
+### Live Demo
 
 https://autonomous-credit-agent.vercel.app/
 
-**GitHub**
+### GitHub
 
 https://github.com/shahwali-dev/autonomous-credit-agent
 
-**Demo Video**
+### Demo Video
 
 https://youtu.be/lUKRRT1O2_A
 
@@ -417,471 +566,195 @@ https://youtu.be/lUKRRT1O2_A
 | Parameter | Value                                              |
 | --------- | -------------------------------------------------- |
 | Network   | Ethereum Sepolia                                   |
-| Purpose   | Source-chain financial activity                    |
+| Chain ID  | `11155111`                                         |
+| Role      | Source financial activity + loan funding           |
 | Explorer  | [Etherscan Sepolia](https://sepolia.etherscan.io/) |
 
 ## Creditcoin Testnet
 
-| Parameter | Value                                                                       |
-| --------- | --------------------------------------------------------------------------- |
-| Network   | Creditcoin Testnet                                                          |
-| Chain ID  | `102031`                                                                    |
-| Currency  | CTC                                                                         |
-| RPC       | `https://rpc.cc3-testnet.creditcoin.network`                                |
-| Explorer  | [Creditcoin Testnet Blockscout](https://creditcoin-testnet.blockscout.com/) |
+| Parameter | Value                                                               |
+| --------- | ------------------------------------------------------------------- |
+| Network   | Creditcoin Testnet                                                  |
+| Chain ID  | `102031`                                                            |
+| Role      | Verified evidence + loan manager                                    |
+| RPC       | `https://rpc.cc3-testnet.creditcoin.network`                        |
+| Explorer  | [Creditcoin Blockscout](https://creditcoin-testnet.blockscout.com/) |
 
-Creditcoin's EVM testnet uses Blockscout as its EVM block explorer.
+## Attestcoin
 
----
+| Parameter        | Value                                            |
+| ---------------- | ------------------------------------------------ |
+| Source chain key | `1`                                              |
+| Source chain     | Ethereum Sepolia                                 |
+| Proof builder    | `https://prover.cc3-testnet.creditcoin.network/` |
 
-# Deployment & Contract Addresses
-
-| Network            | Contract                   | Purpose                         | Address                                                                                                                                      |
-| ------------------ | -------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Ethereum Sepolia   | `FinancialActivityEmitter` | Source financial activity       | [`0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d`](https://sepolia.etherscan.io/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d)              |
-| Creditcoin Testnet | `CreditASC`                | Verified cross-chain evidence   | [`0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d`](https://creditcoin-testnet.blockscout.com/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d) |
-| Ethereum Sepolia   | `RiskGuard`                | Deterministic policy validation | [`0xbC7115626d7Cf967Fb01Ca808Fc48b4A45220e0C`](https://sepolia.etherscan.io/address/0xbC7115626d7Cf967Fb01Ca808Fc48b4A45220e0C)              |
-
-> The identical `FinancialActivityEmitter` / `CreditASC` hexadecimal address is not a mistake: these are deployments on different networks.
+The project uses the current Creditcoin USC/Attestcoin SDK architecture rather than the older pre-native-verifier flow. The official Creditcoin examples also expose the loan lifecycle through `authorize`, `register_source_contract`, `register_loan`, `fund_loan`, and repayment tooling.
+Reference: [Gluwa USC Testnet Bridge Examples](https://github.com/gluwa/usc-testnet-bridge-examples).
 
 ---
 
-# Real Source-Chain Activity
+# Deployed Contracts
 
-The project uses a real deployed Solidity contract:
+## Ethereum Sepolia
 
-```text
-FinancialActivityEmitter
-```
+### FinancialActivityEmitter
 
-Source:
+`0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d`
 
-```text
-contracts/source/FinancialActivityEmitter.sol
-```
+[View on Etherscan](https://sepolia.etherscan.io/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d)
 
-The contract records:
+Purpose:
 
 ```text
 Repayments
 Collateral
-Failed Obligations
-Activity Timestamps
-```
-
-Supported events:
-
-```text
-RepaymentRecorded
-CollateralRecorded
-ObligationFailureRecorded
-ActivityRecorded
-```
-
-## Source Contract
-
-[View FinancialActivityEmitter on Sepolia Etherscan](https://sepolia.etherscan.io/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d)
-
----
-
-## Collateral Transaction
-
-[View collateral transaction on Sepolia Etherscan](https://sepolia.etherscan.io/tx/0x64626b7dd5cb0705535c87d25688126790a118eedbf107d6534b0053d9e32de1)
-
-```text
-Transaction:
-0x64626b7dd5cb0705535c87d25688126790a118eedbf107d6534b0053d9e32de1
-
-Block:
-11704100
-
-Amount:
-1499
-
-Status:
-SUCCESS
+Obligation failures
+Activity timestamps
 ```
 
 ---
 
-## Repayment Transaction
+### RiskGuard
 
-[View repayment transaction on Sepolia Etherscan](https://sepolia.etherscan.io/tx/0x0e70933bde51ea11af6f153d1f0489d83a8fb7a363697512807644e059241eb5)
+`0xbC7115626d7Cf967Fb01Ca808Fc48b4A45220e0C`
+
+[View on Etherscan](https://sepolia.etherscan.io/address/0xbC7115626d7Cf967Fb01Ca808Fc48b4A45220e0C)
+
+[View deployment transaction](https://sepolia.etherscan.io/tx/0xe048e13d4d056bafea674337e02359df3719511475cedae2a2c32d419570bfaf)
+
+Purpose:
 
 ```text
-Transaction:
-0x0e70933bde51ea11af6f153d1f0489d83a8fb7a363697512807644e059241eb5
-
-Block:
-11704112
-
-Repayment ID:
-1
-
-Amount:
-100
-
-Status:
-SUCCESS
+Maximum exposure
+Collateral coverage
+Maximum duration
+Evidence verification
+Risk threshold
 ```
-
-These transactions are real Ethereum Sepolia transactions generated through the deployed source contract.
 
 ---
 
-# Dynamic Evidence Discovery
+### TestERC20
 
-The application can discover borrower activity from the deployed source-chain contract rather than relying exclusively on a hardcoded credit profile.
+`0xA57804f8C52a0106571288B82E3526c5584C81d5`
 
-The intended flow is:
+Purpose:
 
 ```text
-Connected Borrower Wallet
-          ↓
-Source-Chain Activity
-          ↓
-Relevant Financial Event
-          ↓
-Source Transaction
-          ↓
-Attestcoin Verification
+TEST token used by the real Creditcoin loan-flow demonstration
 ```
-
-This allows the credit agent to work from blockchain activity rather than manually entered financial history.
 
 ---
 
-# Attestcoin Integration
+### AuxiliaryLoanContract
 
-The project integrates:
+`0xd88b23BBB4AD3217dB650D1850d2a7A95c56E9EA`
 
-```text
-@gluwa/usc-sdk
-```
+[View on Etherscan](https://sepolia.etherscan.io/address/0xd88b23BBB4AD3217dB650D1850d2a7A95c56E9EA)
 
-Attestcoin is the cross-chain verification layer.
-
-The implemented workflow is:
+Purpose:
 
 ```text
-Real Source Transaction
-        ↓
-Source Transaction Block
-        ↓
-Creditcoin Block Attestation
-        ↓
-Attestcoin Proof Builder
-        ↓
-Transaction Proof
-        ↓
-Merkle + Continuity Proof
-        ↓
-Creditcoin Native Verification
+Source-chain loan funding
+Loan fund registration
+ERC20 transfer
+LoanFunded event
 ```
-
-The generated proof contains the structured information required by the Creditcoin ASC infrastructure:
-
-* Source chain key
-* Source block height
-* Encoded transaction
-* Merkle root
-* Merkle siblings
-* Lower endpoint digest
-* Continuity roots
-
----
-
-# Real Attestcoin Proof Generation
-
-The project has successfully generated an Attestcoin proof for a real Ethereum Sepolia repayment transaction.
-
-Source transaction:
-
-[0x0e70933bde51ea11af6f153d1f0489d83a8fb7a363697512807644e059241eb5](https://sepolia.etherscan.io/tx/0x0e70933bde51ea11af6f153d1f0489d83a8fb7a363697512807644e059241eb5)
-
-```text
-Source block:
-11704112
-
-Attestcoin chain key:
-1
-
-Proof generation:
-SUCCESS
-```
-
-The proof was obtained through the Attestcoin Proof Builder after the corresponding source block became attested on Creditcoin.
-
----
-
-# Real Attestcoin Cryptographic Verification
-
-The generated proof is verified using Creditcoin's native Attestcoin verification infrastructure.
-
-The project calls:
-
-```text
-PrecompileBlockProver.verifySingle()
-```
-
-with:
-
-```text
-chainKey
-headerNumber
-encodedTransaction
-merkleProof
-continuityProof
-```
-
-The demonstrated verification result was:
-
-```text
-true
-```
-
-The flow is therefore:
-
-```text
-Real Ethereum Transaction
-          ↓
-    Attestcoin Proof
-          ↓
-Creditcoin Verification
-          ↓
-        TRUE
-```
-
-This is not a frontend-generated verification flag.
-
----
-
-# CreditASC
-
-The project implements a custom Creditcoin ASC contract:
-
-```text
-CreditASC
-```
-
-Source:
-
-```text
-contracts/CreditASC.sol
-```
-
-CreditASC is built on:
-
-```text
-@gluwa/asc-contracts
-ASCBase
-EvmV1Decoder
-```
-
-Its purpose is to take a verified Attestcoin proof and convert the proven source-chain event into persistent verified evidence on Creditcoin.
-
-The contract receives:
-
-```text
-Action
-Chain Key
-Block Height
-Encoded Transaction
-Merkle Root
-Merkle Siblings
-Lower Endpoint Digest
-Continuity Roots
-```
-
-and executes the official:
-
-```solidity
-ASCBase.execute(...)
-```
-
-verification path.
-
-After verification, the source transaction receipt is decoded and the relevant financial event is extracted.
-
----
-
-# CreditASC Evidence Actions
-
-CreditASC supports:
-
-```text
-1 — REPAYMENT
-
-2 — COLLATERAL
-
-3 — OBLIGATION FAILURE
-```
-
-For example:
-
-```text
-Ethereum Sepolia
-      ↓
-RepaymentRecorded(...)
-      ↓
-Attestcoin Proof
-      ↓
-CreditASC.execute(action = 1)
-      ↓
-Verified Repayment State
-```
-
-This makes Attestcoin part of the actual smart-contract state transition.
-
----
-
-# CreditASC Deployment
-
-CreditASC is deployed on Creditcoin Testnet.
-
-[View CreditASC on Creditcoin Blockscout](https://creditcoin-testnet.blockscout.com/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d)
-
-```text
-Network:
-Creditcoin Testnet
-
-Chain ID:
-102031
-
-Contract:
-0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d
 
 Deployment transaction:
-0x3f92d3c96e21044efd353357e7925d4d9b9e31cb2f1f8155baf64103de48403f
 
+[View deployment](https://sepolia.etherscan.io/tx/0xd7b87f643d2d897fecfb5d886c067cd916ebfa950fdc4f4b4c4c7f79cde12e4c)
+
+---
+
+# Creditcoin Testnet
+
+## CreditASC
+
+`0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d`
+
+[View CreditASC](https://creditcoin-testnet.blockscout.com/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d)
+
+Deployment:
+
+[View deployment transaction](https://creditcoin-testnet.blockscout.com/tx/0x3f92d3c96e21044efd353357e7925d4d9b9e31cb2f1f815b5af64103de48403f)
+
+```text
 Deployment block:
 5497977
 ```
 
-[View deployment transaction](https://creditcoin-testnet.blockscout.com/tx/0x3f92d3c96e21044efd353357e7925d4d9b9e31cb2f1f8155baf64103de48403f)
+---
 
-The deployed contract is configured to process evidence originating from:
+## ASCLoanManager
+
+`0xeC94BCe03B15c4721DB4468a071B566130ac2766`
+
+[View ASCLoanManager](https://creditcoin-testnet.blockscout.com/address/0xeC94BCe03B15c4721DB4468a071B566130ac2766)
+
+Purpose:
 
 ```text
-Ethereum Sepolia FinancialActivityEmitter
+Loan registration
+Loan state management
+Loan funding verification
+Loan repayment state
+Cross-chain loan lifecycle
 ```
+
+Deployment transaction:
+
+[View deployment transaction](https://creditcoin-testnet.blockscout.com/tx/0x3c7ce2ba806652278fe964e582ec4cae269143d5f0b41fba4c698e8f4da71028)
 
 ---
 
-# Real Cross-Chain Proof Executions
+# Real Borrower Evidence
 
-## Proof Trail A — Collateral
-
-### Source Event
-
-[View Ethereum source transaction](https://sepolia.etherscan.io/tx/0x64626b7dd5cb0705535c87d25688126790a118eedbf107d6534b0053d9e32de1)
+The source-chain contract is capable of recording:
 
 ```text
-Source:
-Ethereum Sepolia
+Repayments
+Collateral
+Failed obligations
+Activity timestamps
+```
+
+The current borrower-owned source-chain state was created through real transactions.
+
+## Borrower collateral
+
+[View transaction](https://eth-sepolia.blockscout.com/tx/0xac5418a7f9293ad89de92ffd7c46066cb4292f9e8d26f0a50f6886953206f34a)
+
+```text
+Collateral:
+1499
 
 Block:
-11704100
+11725413
 
-Event:
-CollateralRecorded
-
-Amount:
-1499
-```
-
-### Attestcoin Verification
-
-```text
-Proof generated:
-YES
-
-Native verification:
-true
-```
-
-### CreditASC Execution
-
-[View Creditcoin execution transaction](https://creditcoin-testnet.blockscout.com/tx/0x87596ed99f64cf99f207393f26e47d7d1fd81effa9a7aa9e27ccee6b191edd03)
-
-```text
-Action:
-2 — COLLATERAL
-
-Creditcoin block:
-5498184
-
-Transaction status:
+Status:
 SUCCESS
 ```
 
-### Result
+## Borrower repayment
+
+[View transaction](https://eth-sepolia.blockscout.com/tx/0x5949ebb3b25e8776297bfcff0b9fd953d34b6a552a27094e4786ea109210136c)
 
 ```text
-collateral = 1499
-```
-
----
-
-## Proof Trail B — Repayment
-
-### Source Event
-
-[View Ethereum source transaction](https://sepolia.etherscan.io/tx/0x0e70933bde51ea11af6f153d1f0489d83a8fb7a363697512807644e059241eb5)
-
-```text
-Source:
-Ethereum Sepolia
-
-Block:
-11704112
-
-Event:
-RepaymentRecorded
-
 Repayment ID:
 1
 
 Amount:
 100
-```
 
-### Attestcoin Verification
+Block:
+11725417
 
-```text
-Proof generated:
-YES
-
-Native verification:
-true
-```
-
-### CreditASC Execution
-
-[View Creditcoin execution transaction](https://creditcoin-testnet.blockscout.com/tx/0xa85744feee9b5d9c01b853667cd8b83dfc613c0eaa42efb5f4ac87644814b5f5)
-
-```text
-Action:
-1 — REPAYMENT
-
-Creditcoin block:
-5498192
-
-Transaction status:
+Status:
 SUCCESS
 ```
 
-### Result
-
-```text
-repaymentCount = 1
-```
-
----
-
-# Verified On-Chain Evidence State
-
-The resulting CreditASC state is:
+Read-only contract verification produced:
 
 ```text
 repaymentCount    = 1
@@ -889,81 +762,190 @@ failedObligations = 0
 collateral        = 1499
 ```
 
-The complete evidence chain is:
+This is directly read from the deployed source contract.
+
+---
+
+# Attestcoin Integration
+
+Attestcoin is the project's cross-chain trust layer.
+
+The implementation uses:
 
 ```text
-┌─────────────────────────────┐
-│ Ethereum Sepolia            │
-│                             │
-│ Collateral: 1499            │
-│ Repayment: 100              │
-└──────────────┬──────────────┘
-               │
-               ▼
-┌─────────────────────────────┐
-│ Attestcoin                  │
-│                             │
-│ Transaction Proof           │
-│ Merkle Proof                │
-│ Continuity Proof            │
-└──────────────┬──────────────┘
-               │
-               ▼
-┌─────────────────────────────┐
-│ Creditcoin Native Verifier  │
-│                             │
-│ verifySingle() = true       │
-└──────────────┬──────────────┘
-               │
-               ▼
-┌─────────────────────────────┐
-│ CreditASC                   │
-│                             │
-│ execute(...)                │
-└──────────────┬──────────────┘
-               │
-               ▼
-┌─────────────────────────────┐
-│ Persistent State            │
-│                             │
-│ Repayments: 1               │
-│ Failed: 0                   │
-│ Collateral: 1499            │
-└─────────────────────────────┘
+@gluwa/usc-sdk
 ```
 
-This state is the strongest currently demonstrated cross-chain milestone.
+and the Creditcoin native proof-verification architecture.
+
+The official Attestcoin examples describe the same general architecture of moving source-chain data into Creditcoin through ASC contracts and proof verification.
+Reference: [Gluwa Attestcoin Protocol Examples](https://github.com/gluwa/attestcoin-protocol-examples).
+
+The project's flow is:
+
+```text
+Ethereum transaction
+        ↓
+Source block
+        ↓
+Creditcoin attestation
+        ↓
+Attestcoin Proof Builder
+        ↓
+Transaction proof
+        ↓
+Merkle proof
+        ↓
+Continuity proof
+        ↓
+Creditcoin native verification
+        ↓
+CreditASC
+```
+
+---
+
+# Real Attestcoin Proof
+
+A real Ethereum Sepolia transaction was successfully processed through the Attestcoin proof pipeline.
+
+The demonstrated repayment proof was generated from:
+
+[Repayment transaction](https://sepolia.etherscan.io/tx/0x0e70933bde51ea11af6f153d1f0489d83a8fb7a363697512807644e059241eb5)
+
+```text
+Source block:
+11704112
+
+Chain key:
+1
+
+Proof:
+Generated successfully
+```
+
+The proof contains:
+
+```text
+chainKey
+headerNumber
+txBytes
+merkleProof.root
+merkleProof.siblings
+continuityProof.lowerEndpointDigest
+continuityProof.roots
+```
+
+---
+
+# CreditASC
+
+CreditASC is the custom destination-chain ASC contract.
+
+Source:
+
+```text
+contracts/CreditASC.sol
+```
+
+It is built around:
+
+```text
+ASCBase
+EvmV1Decoder
+Creditcoin native verification
+```
+
+Its responsibility is:
+
+```text
+Receive proof
+     ↓
+Verify source-chain transaction
+     ↓
+Decode proven receipt
+     ↓
+Identify expected event
+     ↓
+Extract financial evidence
+     ↓
+Update persistent state
+```
+
+Supported evidence actions:
+
+```text
+1 — REPAYMENT
+2 — COLLATERAL
+3 — OBLIGATION FAILURE
+```
+
+---
+
+# Verified CreditASC State
+
+The demonstrated proof executions produced persistent Creditcoin state:
+
+```text
+repaymentCount    = 1
+failedObligations = 0
+collateral        = 1499
+```
+
+### Collateral proof
+
+[Creditcoin transaction](https://creditcoin-testnet.blockscout.com/tx/0x87596ed99f64cf99f207393f26e47d7d1fd81effa9a7aa9e27ccee6b191edd03)
+
+```text
+Action:
+2 — COLLATERAL
+
+Result:
+collateral = 1499
+```
+
+### Repayment proof
+
+[Creditcoin transaction](https://creditcoin-testnet.blockscout.com/tx/0xa85744feee9b5d9c01b853667cd8b83dfc613c0eaa42efb5f4ac87644814b5f5)
+
+```text
+Action:
+1 — REPAYMENT
+
+Result:
+repaymentCount = 1
+```
 
 ---
 
 # AI Credit Agent
 
-Once verified evidence is available, the AI credit layer evaluates the borrower's profile.
+Once verified evidence is available, the AI credit engine evaluates the borrower.
 
-The risk engine considers:
+Inputs include:
 
 ```text
-Repayment History
-Failed Obligations
-Verified Collateral
-Financial Activity
-Requested Amount
-Requested Duration
-Evidence Verification
+Repayment history
+Failed obligations
+Collateral
+Activity duration
+Requested amount
+Requested duration
+Evidence verification
 ```
 
-The agent produces structured decision data:
+Outputs include:
 
 ```text
-Risk Level
+Risk level
 Confidence
-Recommended Credit Amount
-Recommended Duration
-Approval / Rejection
-Decision Reasoning
+Recommended amount
+Recommended duration
+Approval / rejection
+Decision reasoning
 ```
 
-Supported risk levels:
+The current risk engine is designed around:
 
 ```text
 LOW
@@ -971,362 +953,510 @@ MEDIUM
 HIGH
 ```
 
-Conceptually:
+A demonstrated decision configuration produced:
 
 ```text
-Verified Evidence
-       ↓
-AI Risk Engine
-       ↓
-Risk Assessment
-       ↓
-Credit Recommendation
+Risk:
+MEDIUM
+
+Confidence:
+75%
+
+Recommended amount:
+700
+
+Recommended duration:
+30 days
+
+Recommendation:
+APPROVE
 ```
+
+The AI recommendation is deliberately not the final authority.
 
 ---
 
 # RiskGuard
 
-The AI does not have unrestricted financial authority.
+RiskGuard is the deterministic safety layer.
 
-RiskGuard is the deterministic policy layer between AI decisioning and financial execution.
-
-Current policy constraints include:
+The principle is:
 
 ```text
-Maximum Credit Exposure
-Minimum Collateral Coverage
-Maximum Duration
-Evidence Verification
-Risk Threshold
+AI proposes
+   ↓
+RiskGuard validates
+   ↓
+Execution is permitted only when policy conditions pass
 ```
 
-Current configuration:
+Current policy:
 
 | Policy                      |          Value |
 | --------------------------- | -------------: |
-| Maximum Exposure            |       `$5,000` |
-| Minimum Collateral Coverage |          `50%` |
-| Maximum Duration            |      `90 days` |
-| Evidence Verification       |       Required |
-| Allowed AI Risk             | `LOW / MEDIUM` |
+| Maximum exposure            |       `$5,000` |
+| Minimum collateral coverage |          `50%` |
+| Maximum duration            |      `90 days` |
+| Evidence verification       |       Required |
+| Allowed AI risk             | `LOW / MEDIUM` |
 
-The intended execution model is:
+For the demonstrated `$700` recommendation:
 
 ```text
-AI
- ↓
-Recommendation
- ↓
-RiskGuard
- ↓
-Policy Validation
- ↓
-Creditcoin Execution
+Requested credit:
+$700
+
+Maximum exposure:
+$5,000
+
+Duration:
+30 days
+
+Maximum duration:
+90 days
+
+Collateral:
+1499
+
+Collateral coverage:
+214%
+
+Evidence:
+Verified
+
+Risk:
+MEDIUM
+
+Result:
+PASS
 ```
 
-The purpose is to ensure that AI reasoning does not itself constitute unlimited execution authority.
+The deterministic layer prevents AI reasoning from becoming unrestricted financial authority.
 
 ---
 
-# RiskGuard Smart Contract
+# Real Creditcoin Loan Infrastructure
 
-A Solidity RiskGuard contract has been implemented and deployed on Ethereum Sepolia.
+The project does not stop at an AI recommendation.
 
-[View RiskGuard on Sepolia Etherscan](https://sepolia.etherscan.io/address/0xbC7115626d7Cf967Fb01Ca808Fc48b4A45220e0C)
-
-```text
-Contract:
-0xbC7115626d7Cf967Fb01Ca808Fc48b4A45220e0C
-
-Deployment transaction:
-0xe048e13d4d056bafea674337e02359df3719511475cedae2a2c32d419570bfaf
-```
-
-[View RiskGuard deployment transaction](https://sepolia.etherscan.io/tx/0xe048e13d4d056bafea674337e02359df3719511475cedae2a2c32d419570bfaf)
-
-The contract and application-level RiskGuard logic have been tested against the defined policy constraints.
-
----
-
-# Creditcoin Execution Status
-
-Creditcoin is the destination environment for the credit execution layer.
-
-The project currently has a real Creditcoin execution path for **verified cross-chain evidence**:
+It integrates the Creditcoin loan-flow infrastructure:
 
 ```text
-Attestcoin Proof
-      ↓
-Creditcoin Verification
-      ↓
-CreditASC.execute()
-      ↓
-Persistent Verified Evidence
-```
-
-However, the project does **not** claim that an AI-approved credit line has already been issued through a final on-chain Creditcoin lending transaction.
-
-### Completed
-
-* Real source-chain transactions
-* Real Attestcoin proof generation
-* Real cryptographic proof verification
-* CreditASC deployment
-* Real `CreditASC.execute()` transactions
-* Persistent verified evidence on Creditcoin
-* AI credit decision layer
-* RiskGuard implementation and tests
-
-### In Development
-
-* AI → RiskGuard → final Creditcoin credit-execution transaction
-* Complete autonomous on-chain credit-line lifecycle
-* Automated end-to-end execution
-* Final frontend integration of the complete execution path
-
-This distinction is intentional: the README only claims an on-chain lending action when there is a corresponding verifiable transaction hash.
-
----
-
-# Demo Values vs Verified Blockchain Evidence
-
-The application contains demonstration scenarios for showing the AI decision and credit-line experience.
-
-For example:
-
-```text
-Requested Amount: $1,000
-Duration: 30 days
-Risk: LOW
-Confidence: 95%
-Recommendation: APPROVE
-```
-
-These values belong to the application's demonstration flow.
-
-They are **not** presented as an already completed Creditcoin lending transaction.
-
-The currently verified live blockchain evidence is:
-
-```text
-Repayments: 1
-Failed Obligations: 0
-Collateral: 1499
-```
-
-The project intentionally separates:
-
-```text
-DEMO / UI STATE
-```
-
-from:
-
-```text
-VERIFIED ON-CHAIN STATE
-```
-
-A completed lending action will only be claimed as on-chain when accompanied by a verifiable transaction.
-
----
-
-# Credit Line Workflow
-
-The frontend contains a credit-line workflow representing:
-
-```text
-Credit Limit
-Used Amount
-Available Amount
-Outstanding Balance
-Draws
-Repayments
-Status
-Transaction History
-```
-
-Example UI lifecycle:
-
-## Initial
-
-```text
-Credit Limit:  $1,000
-Used:          $0
-Available:     $1,000
-Outstanding:   $0
-```
-
-## After $500 Draw
-
-```text
-Credit Limit:  $1,000
-Used:          $500
-Available:     $500
-Outstanding:   $500
-```
-
-## After $200 Repayment
-
-```text
-Credit Limit:  $1,000
-Used:          $300
-Available:     $700
-Outstanding:   $300
-```
-
-These values represent the application's credit-line workflow and are not claimed as completed on-chain lending transactions unless accompanied by a verifiable transaction hash.
-
----
-
-# End-to-End Workflow
-
-The complete intended architecture is:
-
-```text
-                 SOURCE CHAIN
-                      │
-                      │
-             Financial Activity
-                      │
-                      ▼
-             FinancialActivityEmitter
-                      │
-                      │ Real Transaction
-                      ▼
-              Attestcoin Protocol
-                      │
-             ┌────────┴────────┐
-             │                 │
-       Merkle Proof      Continuity Proof
-             │                 │
-             └────────┬────────┘
-                      ▼
-          Creditcoin Native Verifier
-                      │
-                      ▼
-                  CreditASC
-                      │
-                      ▼
-          Verified Evidence State
-                      │
-                      ▼
-               AI Credit Agent
-                      │
-                      ▼
-                 RiskGuard
-                      │
-              Policy Validation
-                      │
-                      ▼
-              Creditcoin Execution
-                      │
-                      ▼
-                 Credit Line
-```
-
----
-
-# Why Attestcoin?
-
-Cross-chain credit requires more than simply reading data from another blockchain.
-
-The destination chain needs a mechanism to verify that the source-chain transaction actually occurred.
-
-The demonstrated architecture is:
-
-```text
-Real Source Transaction
+ASCLoanManager
         ↓
-Source Block
+Source Loan Contract
         ↓
-Block Attestation
+Loan Registration
         ↓
-Attestcoin Proof
+Funding
         ↓
-Merkle + Continuity Verification
+Attestcoin Funding Proof
         ↓
-Creditcoin Native Verification
-        ↓
-CreditASC State Update
+Funded Loan State
 ```
 
-Attestcoin therefore serves as the project's:
-
-> **Cross-chain truth layer**
-
-It is not merely:
-
-* a frontend status
-* a manually entered proof hash
-* a centralized API response
-* a value stored only in application state
-
-The proof is actually submitted to and processed by the deployed Creditcoin ASC contract.
+The official Creditcoin loan examples expose the corresponding lifecycle through loan authorization, source-contract registration, registration, funding, repayment, and inspection tooling.
+Reference: [official USC testnet loan-flow examples](https://github.com/gluwa/usc-testnet-bridge-examples).
 
 ---
 
-# Why Creditcoin?
+# Loan #1 — Complete On-Chain Lifecycle
 
-Creditcoin provides the destination environment for the credit infrastructure.
-
-The project uses Creditcoin to demonstrate how verified financial activity from another blockchain can become persistent evidence in a credit-oriented execution environment.
-
-The architecture combines:
+The project's first real Creditcoin loan is:
 
 ```text
-Cross-Chain Evidence
-        +
-Cryptographic Verification
-        +
-AI Credit Intelligence
-        +
-Deterministic Risk Controls
-        +
-Creditcoin Execution
+Loan ID:
+1
+
+Loan Amount:
+700 TEST
+
+Interest Rate:
+5%
+
+Expected Repayment:
+735 TEST
+
+Duration:
+~30 days
+```
+
+## Step 1 — Source loan contract registration
+
+The source loan contract was registered with the Creditcoin loan manager.
+
+[View source contract registration](https://creditcoin-testnet.blockscout.com/tx/0x718af3c9f57cabdbc4afac6ef40e95d759ff3dc964b040fa0ac1eb48752abb3b)
+
+```text
+Source Loan Contract:
+0xd88b23BBB4AD3217dB650D1850d2a7A95c56E9EA
+
+Status:
+SUCCESS
+
+Creditcoin block:
+5503766
 ```
 
 ---
 
-# Security Philosophy
+## Step 2 — Loan registration
 
-Autonomous financial agents should not have unrestricted control over capital.
+Loan #1 was registered on Creditcoin.
 
-The project therefore separates:
+[View Loan #1 registration](https://creditcoin-testnet.blockscout.com/tx/0x4a6b7de43c20969703a1b84170c70e2abd59f07c8cbb5a4287197e068c310d40)
 
 ```text
-AI Decision
-      ↓
-Deterministic Policy
-      ↓
-Execution
+Loan ID:
+1
+
+Amount:
+700 TEST
+
+Interest:
+5%
+
+Expected repayment:
+735 TEST
+
+Initial status:
+Created
 ```
 
-The AI proposes.
+---
 
-RiskGuard validates.
+## Step 3 — Register funding
 
-The execution layer is intended to operate only after the required conditions are satisfied.
+The source-chain loan contract was configured to fund Loan #1.
 
-The architectural separation is:
+[View funding registration](https://eth-sepolia.blockscout.com/tx/0x109695384f1b63ecc1228eb7087cc066e23ac8965a24930b8537b238b86d1aac)
+
+```text
+Loan:
+1
+
+Fund amount:
+700 TEST
+
+Status:
+SUCCESS
+```
+
+---
+
+## Step 4 — ERC20 authorization
+
+The lender authorized the source loan contract to transfer the funding amount.
+
+[View ERC20 approval](https://eth-sepolia.blockscout.com/tx/0x180a31de7c5f1c33dfbf0aeb44b0652bad134ff959c258658726d7b25865b330)
+
+```text
+Approved:
+700 TEST
+```
+
+---
+
+## Step 5 — Real funding transaction
+
+The actual 700 TEST loan funding was executed.
+
+[View funding transaction](https://eth-sepolia.blockscout.com/tx/0xd303577e6021927677745a32e432a6f58e9446e48991a7e0364ef349544426c7)
+
+```text
+Loan:
+#1
+
+Amount:
+700 TEST
+
+From:
+Lender
+
+To:
+Borrower
+
+Status:
+SUCCESS
+```
+
+The borrower's TEST balance increased by the funded amount.
+
+---
+
+# Funding Proof — Attestcoin → Creditcoin
+
+The source-chain funding transaction occurred at:
+
+```text
+Block:
+11725463
+```
+
+The Attestcoin proof pipeline then:
+
+```text
+Detected source block
+        ↓
+Waited for attestation
+        ↓
+Generated proof
+        ↓
+Produced Merkle proof
+        ↓
+Produced continuity proof
+        ↓
+Submitted proof to Creditcoin
+```
+
+The generated proof contained:
+
+```text
+Continuity roots:
+8
+```
+
+The proof execution gas estimate was successfully calculated before submission.
+
+---
+
+## Funding Proof Submission
+
+[View funding proof transaction on Creditcoin](https://creditcoin-testnet.blockscout.com/tx/0xacd75d9c33b64d58ffe07ecc6dff8b5085220a1d2496f26959409619b47540e8)
+
+```text
+Source block:
+11725463
+
+Proof:
+Valid
+
+Submission:
+SUCCESS
+
+Creditcoin block:
+5505285
+```
+
+This is the cross-chain proof that connects the real source-chain funding transaction to the Creditcoin loan state.
+
+---
+
+# Final Loan Status
+
+After the funding proof was submitted, the deployed `ASCLoanManager` was queried directly.
+
+Result:
+
+```text
+Loan ID:
+1
+
+Status:
+1
+
+Status meaning:
+Funded
+
+Loan amount:
+700 TEST
+
+Repaid amount:
+0 TEST
+```
+
+Therefore:
+
+```text
+┌───────────────────────────────┐
+│        CREDITCOIN LOAN #1     │
+├───────────────────────────────┤
+│ Amount:       700 TEST        │
+│ Interest:     5%              │
+│ Repayment:    735 TEST        │
+│ Status:       FUNDED          │
+│ Repaid:       0 TEST          │
+└───────────────────────────────┘
+```
+
+**Loan #1 is now a real funded loan state on Creditcoin Testnet.**
+
+---
+
+# Complete Evidence Chain
+
+The complete demonstrated system can be summarized as:
+
+```text
+                    REAL SOURCE DATA
+                           │
+                           ▼
+             Ethereum Sepolia Transaction
+                           │
+                           ▼
+                    Attestcoin Proof
+                           │
+             ┌─────────────┴─────────────┐
+             │                           │
+        Merkle Proof              Continuity Proof
+             │                           │
+             └─────────────┬─────────────┘
+                           ▼
+               Creditcoin Native Verifier
+                           │
+                           ▼
+                      CreditASC
+                           │
+                           ▼
+             Verified Financial Evidence
+                           │
+                           ▼
+                    AI Credit Agent
+                           │
+                           ▼
+                       RiskGuard
+                           │
+                           ▼
+                  Creditcoin Loan Manager
+                           │
+                           ▼
+                 Real Source Funding
+                           │
+                           ▼
+                Attestcoin Funding Proof
+                           │
+                           ▼
+                   Loan #1 = FUNDED
+```
+
+This is the project's central technical achievement.
+
+---
+
+# Security Architecture
+
+The architecture deliberately separates intelligence from authority.
 
 ```text
 Attestcoin
-    ↓
-Verified Truth
+    │
+    └── Verified truth
 
 AI Agent
-    ↓
-Decision Intelligence
+    │
+    └── Decision intelligence
 
 RiskGuard
-    ↓
-Deterministic Authority
+    │
+    └── Deterministic policy
 
 Creditcoin
-    ↓
-Controlled Execution
+    │
+    └── Financial execution
 ```
+
+The AI does not directly control arbitrary capital.
+
+The intended authority boundary is:
+
+```text
+AI Decision
+     ↓
+Policy Validation
+     ↓
+Protocol Execution
+```
+
+Server-side private keys are never exposed to the browser.
+
+Sensitive configuration belongs in:
+
+```text
+.env.local
+```
+
+and must never be committed to Git.
+
+---
+
+# Frontend & User Experience
+
+The application is built as a full credit-agent experience rather than a single transaction page.
+
+Major surfaces include:
+
+```text
+Dashboard
+Apply
+Evidence
+AI Agent
+Decision
+Credit Lines
+Transactions
+```
+
+The UI exposes the decision pipeline:
+
+```text
+Wallet
+ ↓
+Financial Evidence
+ ↓
+Verification
+ ↓
+AI Analysis
+ ↓
+RiskGuard
+ ↓
+Credit Decision
+ ↓
+Credit Line
+ ↓
+Transactions
+```
+
+The frontend is designed so that a judge can understand the relationship between:
+
+```text
+Evidence
+Decision
+Policy
+Execution
+```
+
+rather than seeing an isolated AI output.
+
+---
+
+# Demo State vs Blockchain State
+
+The application includes UI scenarios for demonstrating the complete credit-agent experience.
+
+Those UI states are presentation-layer experiences.
+
+The project separately verifies actual blockchain state through transaction hashes and contract reads.
+
+The distinction is:
+
+```text
+UI / Demo State
+        ≠
+Verified Blockchain State
+```
+
+The following are independently verifiable:
+
+```text
+Real source transactions
+Real Attestcoin proofs
+Real CreditASC executions
+Real Creditcoin loan registration
+Real 700 TEST funding
+Real funding proof
+Real Loan #1 Funded status
+```
+
+This README intentionally links directly to the relevant transactions so that judges do not have to trust screenshots or frontend labels.
 
 ---
 
@@ -1334,19 +1464,11 @@ Controlled Execution
 
 ## FinancialActivityEmitter
 
-Source:
-
 ```text
 contracts/source/FinancialActivityEmitter.sol
 ```
 
-Network:
-
-```text
-Ethereum Sepolia
-```
-
-[View contract on Etherscan](https://sepolia.etherscan.io/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d)
+[View source contract](https://sepolia.etherscan.io/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d)
 
 Functions:
 
@@ -1370,85 +1492,60 @@ ActivityRecorded
 
 ## CreditASC
 
-Source:
-
 ```text
 contracts/CreditASC.sol
 ```
 
-Network:
-
-```text
-Creditcoin Testnet
-```
-
-[View contract on Blockscout](https://creditcoin-testnet.blockscout.com/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d)
-
-Built on:
-
-```text
-@gluwa/asc-contracts
-ASCBase
-EvmV1Decoder
-```
+[View deployed contract](https://creditcoin-testnet.blockscout.com/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d)
 
 Responsibilities:
 
 ```text
-Verify Attestcoin Proof
-        ↓
-Decode Source Receipt
-        ↓
-Validate Expected Event
-        ↓
-Extract Borrower
-        ↓
-Update Verified Evidence
-        ↓
-Emit CreditEvidenceVerified
-```
-
-Supported actions:
-
-```text
-REPAYMENT
-COLLATERAL
-OBLIGATION_FAILURE
+Attestcoin proof verification
+Receipt decoding
+Event validation
+Evidence extraction
+Persistent evidence state
 ```
 
 ---
 
 ## RiskGuard
 
-Source:
-
 ```text
 contracts/RiskGuard.sol
 ```
 
-Network:
+[View deployed contract](https://sepolia.etherscan.io/address/0xbC7115626d7Cf967Fb01Ca808Fc48b4A45220e0C)
+
+---
+
+## ASCLoanManager
+
+Creditcoin deployment:
 
 ```text
-Ethereum Sepolia
+0xeC94BCe03B15c4721DB4468a071B566130ac2766
 ```
 
-[View contract on Etherscan](https://sepolia.etherscan.io/address/0xbC7115626d7Cf967Fb01Ca808Fc48b4A45220e0C)
+[View ASCLoanManager](https://creditcoin-testnet.blockscout.com/address/0xeC94BCe03B15c4721DB4468a071B566130ac2766)
 
-Responsibilities:
+The contract manages:
 
 ```text
-Maximum Exposure
-Collateral Ratio
-Maximum Duration
-Evidence Verification
-Risk Threshold
+Loan registration
+Loan terms
+Loan status
+Funding state
+Repayment state
+Cross-chain proof execution
 ```
 
 ---
 
 # Attestcoin Implementation
 
-The Attestcoin integration is located under:
+The Attestcoin implementation is organized under:
 
 ```text
 lib/attestcoin/
@@ -1463,185 +1560,48 @@ credit-config.ts
 credit-worker.ts
 ```
 
-The implementation performs:
+The proof pipeline performs:
 
 ```text
-1. Wait for source transaction
-2. Detect source block
-3. Wait for block attestation
-4. Request Attestcoin proof
-5. Verify proof using native infrastructure
-6. Build CreditASC.execute() calldata
-7. Estimate proof execution gas
-8. Submit proof to CreditASC
-9. Wait for Creditcoin confirmation
-10. Persist verified evidence on-chain
+1. Observe source transaction
+2. Wait for confirmation
+3. Detect source block
+4. Wait for block attestation
+5. Generate Attestcoin proof
+6. Obtain Merkle proof
+7. Obtain continuity proof
+8. Verify proof
+9. Build CreditASC calldata
+10. Estimate gas
+11. Submit transaction
+12. Confirm Creditcoin state
 ```
 
-The proof payload follows the Creditcoin ASC proof structure:
-
-```text
-chainKey
-headerNumber
-txBytes
-merkleProof.root
-merkleProof.siblings
-continuityProof.lowerEndpointDigest
-continuityProof.roots
-```
+The current implementation follows the native Attestcoin verification architecture. The SDK itself exposes helpers for waiting until a source height is attested and retrieving proof data.
 
 ---
 
-# Real CreditASC Worker
+# Creditcoin Loan Implementation
 
-The project includes a server-side worker responsible for processing verified evidence.
+The project follows the official Creditcoin loan-flow architecture rather than inventing a separate mock lending mechanism.
 
-Conceptually:
-
-```text
-Source Transaction
-       ↓
-Proof Service
-       ↓
-Attestcoin Verification
-       ↓
-Credit Proof Builder
-       ↓
-CreditASC.execute()
-       ↓
-Creditcoin Confirmation
-```
-
-The worker uses a server-side signer for Creditcoin transactions.
-
-Private keys are not exposed to the browser and must never be committed to the repository.
-
----
-
-# Verified Evidence API
-
-The application's evidence model includes:
+Relevant official components include:
 
 ```text
-repaymentCount
-failedObligations
-collateral
-activityDays
-verified
-proofHash
-txHash
-sourceBlock
-verificationStatus
+authorize.ts
+register_source_contract.ts
+register.ts
+fund_loan.ts
+loan_proof.ts
+repay_loan.ts
+wait_loan_status.ts
 ```
 
-Verification states:
+Reference:
 
-```text
-PENDING
-VERIFYING
-VERIFIED
-FAILED
-```
+https://github.com/gluwa/usc-testnet-bridge-examples/tree/main/loan
 
-The important distinction is that a `VERIFIED` result is intended to correspond to a successful Attestcoin verification path rather than merely a manually assigned frontend boolean.
-
----
-
-# Application Flow
-
-```text
-Dashboard
-    ↓
-Credit Application
-    ↓
-Wallet Connection
-    ↓
-Evidence Discovery
-    ↓
-Source-Chain Transaction
-    ↓
-Attestcoin Verification
-    ↓
-CreditASC Verified Evidence
-    ↓
-AI Credit Agent
-    ↓
-RiskGuard
-    ↓
-Creditcoin Execution
-    ↓
-Credit Line
-    ↓
-Draw / Repayment
-    ↓
-Transaction History
-```
-
----
-
-# Frontend
-
-The application is built with Next.js and exposes the major stages of the credit lifecycle.
-
-Conceptual structure:
-
-```text
-/
-├── Dashboard
-├── Apply
-├── Evidence
-├── AI Agent
-├── Decision
-├── Credit Lines
-└── Transactions
-```
-
-The UI is designed to make the decision pipeline visible rather than hiding everything behind a single transaction button.
-
----
-
-# Technology Stack
-
-## Frontend
-
-* Next.js 16
-* React 19
-* TypeScript
-* Tailwind CSS
-* Zustand
-
-## Blockchain
-
-* Solidity
-* Foundry
-* Ethereum Sepolia
-* Creditcoin Testnet
-* EVM Wallets
-* ethers.js
-
-## Cross-Chain
-
-* Attestcoin Protocol
-* `@gluwa/usc-sdk`
-* Attestcoin Proof Builder
-* Merkle Proofs
-* Continuity Proofs
-* Creditcoin Native Verification Precompile
-* `ASCBase`
-
-## AI / Decisioning
-
-* TypeScript
-* Custom Risk Engine
-* Deterministic RiskGuard Policies
-
-## Development
-
-* Node.js
-* pnpm
-* Foundry
-* forge-std
-* ethers
+The project adapted this infrastructure into the autonomous credit-agent architecture.
 
 ---
 
@@ -1667,8 +1627,10 @@ autonomous-credit-agent/
 │   │   ├── credit-proof.ts
 │   │   ├── credit-config.ts
 │   │   └── credit-worker.ts
+│   │
 │   ├── engine/
 │   │   └── riskguard.ts
+│   │
 │   └── store/
 │
 ├── contracts/
@@ -1682,7 +1644,10 @@ autonomous-credit-agent/
 │   └── DeployCreditASC.s.sol
 │
 ├── scripts/
-│   └── run-credit-proof.ts
+│   └── creditcoin/
+│       ├── register-loan.ts
+│       ├── fund-loan.ts
+│       └── ...
 │
 ├── tests/
 │
@@ -1700,6 +1665,51 @@ autonomous-credit-agent/
 
 ---
 
+# Technology Stack
+
+## Frontend
+
+* Next.js 16
+* React 19
+* TypeScript
+* Tailwind CSS
+* Zustand
+
+## Blockchain
+
+* Solidity
+* Foundry
+* Ethereum Sepolia
+* Creditcoin Testnet
+* ethers.js 6
+* EVM wallets
+
+## Cross-Chain
+
+* Attestcoin Protocol
+* `@gluwa/usc-sdk`
+* Creditcoin native verification
+* Merkle proofs
+* Continuity proofs
+* ASCBase
+* EvmV1Decoder
+
+## AI
+
+* TypeScript
+* Custom risk engine
+* Structured AI credit decisioning
+* Deterministic RiskGuard policy layer
+
+## Infrastructure
+
+* Next.js server-side API routes
+* Vercel
+* Creditcoin proof infrastructure
+* Ethereum Sepolia RPC
+
+---
+
 # Getting Started
 
 ## Prerequisites
@@ -1709,14 +1719,7 @@ Install:
 * Node.js
 * pnpm
 * Foundry
-* MetaMask or another EVM-compatible wallet
-
-The current testnet configuration uses:
-
-```text
-Ethereum Sepolia
-Creditcoin Testnet
-```
+* MetaMask or another EVM wallet
 
 ---
 
@@ -1736,16 +1739,20 @@ Create:
 .env.local
 ```
 
-Example:
+Example configuration:
 
 ```env
 CREDITCOIN_RPC_URL=https://rpc.cc3-testnet.creditcoin.network
 CREDITCOIN_PROOF_BUILDER_URL=https://prover.cc3-testnet.creditcoin.network/
 SOURCE_CHAIN_KEY=1
-SOURCE_CHAIN_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
-CREDITASC_CONTRACT_ADDRESS=YOUR_CREDITASC_ADDRESS
-PRIVATE_KEY=YOUR_LOCAL_SERVER_SIDE_KEY
+SOURCE_CHAIN_RPC_URL=YOUR_SEPOLIA_RPC
+CREDITASC_CONTRACT_ADDRESS=0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d
+ASC_LOAN_MANAGER_CONTRACT_ADDRESS=0xeC94BCe03B15c4721DB4468a071B566130ac2766
+SOURCE_CHAIN_ERC20_CONTRACT_ADDRESS=0xA57804f8C52a0106571288B82E3526c5584C81d5
+RISKGUARD_CONTRACT_ADDRESS=0xbC7115626d7Cf967Fb01Ca808Fc48b4A45220e0C
 ```
+
+Private keys must remain local/server-side.
 
 Never commit:
 
@@ -1753,13 +1760,13 @@ Never commit:
 .env.local
 ```
 
-or any:
+Never publish:
 
 ```text
-Private key
-Seed phrase
-Wallet password
-API secret
+Private keys
+Seed phrases
+Wallet credentials
+Secrets
 ```
 
 ---
@@ -1780,52 +1787,36 @@ http://localhost:3000
 
 # Testing
 
-## Foundry Tests
-
-Run:
+## Foundry
 
 ```bash
 forge test -vv
 ```
 
-Current result:
+Verified project test result:
 
 ```text
 16 passing
 0 failing
 ```
 
-The suite covers:
+Coverage includes:
 
 ```text
-RiskGuardTest
-CreditASCTest
-FinancialActivityEmitterTest
+FinancialActivityEmitter
+CreditASC
+RiskGuard
 ```
-
-Including:
-
-* Repayment recording
-* Collateral recording
-* Obligation failures
-* Multiple financial activities
-* Invalid repayment amounts
-* Invalid collateral amounts
-* CreditASC evidence processing
-* RiskGuard policy validation
-* Invalid decision scenarios
 
 ---
 
-# Type Checking
-
-Run:
+## TypeScript
 
 ```bash
 pnpm exec tsc --noEmit
 ```
 
-Current result:
+Result:
 
 ```text
 PASS
@@ -1833,388 +1824,223 @@ PASS
 
 ---
 
-# Production Build
-
-Run:
+## Production Build
 
 ```bash
 pnpm run build
 ```
 
-The project uses the Next.js production build.
-
-The current deployed application is built successfully through Vercel.
+The production build has been successfully deployed through Vercel.
 
 ---
 
 # Reproducing the Verified Proof Flow
 
-The repository includes the proof-processing worker:
+The repository contains the proof worker infrastructure.
 
-```text
-lib/attestcoin/credit-worker.ts
-```
-
-and a runner:
-
-```text
-scripts/run-credit-proof.ts
-```
-
-The worker performs:
+The flow is:
 
 ```text
 Source transaction
       ↓
 Wait for confirmation
       ↓
-Determine source block
+Find source block
       ↓
 Wait for Creditcoin attestation
       ↓
 Generate Attestcoin proof
       ↓
-Verify proof natively
+Verify proof
       ↓
-Build CreditASC calldata
+Build destination calldata
       ↓
 Estimate gas
       ↓
-Submit CreditASC.execute()
+Submit proof
       ↓
-Wait for Creditcoin confirmation
-```
-
-The demonstrated collateral proof execution used:
-
-```text
-Action = 2
-```
-
-The demonstrated repayment proof execution used:
-
-```text
-Action = 1
-```
-
-A reproduced execution should always produce a new transaction hash that can be independently checked on the appropriate explorer.
-
----
-
-# Current Verified Testnet Evidence
-
-## Ethereum Sepolia
-
-### Source Contract
-
-[FinancialActivityEmitter](https://sepolia.etherscan.io/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d)
-
-```text
-0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d
-```
-
-### Collateral
-
-[Transaction](https://sepolia.etherscan.io/tx/0x64626b7dd5cb0705535c87d25688126790a118eedbf107d6534b0053d9e32de1)
-
-```text
-Block: 11704100
-Amount: 1499
-Status: SUCCESS
-```
-
-### Repayment
-
-[Transaction](https://sepolia.etherscan.io/tx/0x0e70933bde51ea11af6f153d1f0489d83a8fb7a363697512807644e059241eb5)
-
-```text
-Block: 11704112
-Repayment ID: 1
-Amount: 100
-Status: SUCCESS
-```
-
----
-
-# Creditcoin Testnet Evidence
-
-## CreditASC
-
-[Contract](https://creditcoin-testnet.blockscout.com/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d)
-
-```text
-Chain ID: 102031
-
-Contract:
-0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d
-
-Deployment block:
-5497977
-```
-
-### Deployment
-
-[View deployment transaction](https://creditcoin-testnet.blockscout.com/tx/0x3f92d3c96e21044efd353357e7925d4d9b9e31cb2f1f8155baf64103de48403f)
-
-```text
-0x3f92d3c96e21044efd353357e7925d4d9b9e31cb2f1f8155baf64103de48403f
-```
-
----
-
-## Collateral Proof Execution
-
-[View CreditASC transaction](https://creditcoin-testnet.blockscout.com/tx/0x87596ed99f64cf99f207393f26e47d7d1fd81effa9a7aa9e27ccee6b191edd03)
-
-```text
-0x87596ed99f64cf99f207393f26e47d7d1fd81effa9a7aa9e27ccee6b191edd03
-
-Block:
-5498184
-
-Action:
-2 — COLLATERAL
-
-Result:
-collateral = 1499
-```
-
----
-
-## Repayment Proof Execution
-
-[View CreditASC transaction](https://creditcoin-testnet.blockscout.com/tx/0xa85744feee9b5d9c01b853667cd8b83dfc613c0eaa42efb5f4ac87644814b5f5)
-
-```text
-0xa85744feee9b5d9c01b853667cd8b83dfc613c0eaa42efb5f4ac87644814b5f5
-
-Block:
-5498192
-
-Action:
-1 — REPAYMENT
-
-Result:
-repaymentCount = 1
-```
-
----
-
-# Evidence Chain — Claim → Evidence → Verification
-
-The project is intentionally structured so that important claims can be checked directly.
-
-| Claim                     | Evidence                          | Verification                                                                                                                  |
-| ------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| Real collateral exists    | Ethereum Sepolia transaction      | [Etherscan](https://sepolia.etherscan.io/tx/0x64626b7dd5cb0705535c87d25688126790a118eedbf107d6534b0053d9e32de1)               |
-| Real repayment exists     | Ethereum Sepolia transaction      | [Etherscan](https://sepolia.etherscan.io/tx/0x0e70933bde51ea11af6f153d1f0489d83a8fb7a363697512807644e059241eb5)               |
-| CreditASC is deployed     | Contract address + deployment tx  | [Blockscout](https://creditcoin-testnet.blockscout.com/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d)                    |
-| Collateral proof executed | Creditcoin transaction            | [Blockscout](https://creditcoin-testnet.blockscout.com/tx/0x87596ed99f64cf99f207393f26e47d7d1fd81effa9a7aa9e27ccee6b191edd03) |
-| Repayment proof executed  | Creditcoin transaction            | [Blockscout](https://creditcoin-testnet.blockscout.com/tx/0xa85744feee9b5d9c01b853667cd8b83dfc613c0eaa42efb5f4ac87644814b5f5) |
-| RiskGuard deployed        | Contract + deployment transaction | [Etherscan](https://sepolia.etherscan.io/address/0xbC7115626d7Cf967Fb01Ca808Fc48b4A45220e0C)                                  |
-| Source contract deployed  | Contract address                  | [Etherscan](https://sepolia.etherscan.io/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d)                                  |
-
----
-
-# Final Verified Evidence State
-
-Current CreditASC state:
-
-```text
-repaymentCount    = 1
-failedObligations = 0
-collateral        = 1499
-```
-
-The evidence was produced through:
-
-```text
-Ethereum Sepolia
+Wait for confirmation
       ↓
-Real Financial Event
-      ↓
-Attestcoin Proof
-      ↓
-Native Cryptographic Verification
-      ↓
-CreditASC.execute()
-      ↓
-Creditcoin On-Chain State
+Read destination state
+```
+
+For the demonstrated funding proof:
+
+```text
+Source block:
+11725463
+
+Continuity roots:
+8
+
+Proof:
+SUCCESS
+
+Creditcoin proof transaction:
+0xacd75d9c33b64d58ffe07ecc6dff8b5085220a1d2496f26959409619b47540e8
 ```
 
 ---
 
-# Current Status
+# Verification Matrix
+
+| Component                         | Status   | Direct Evidence                                                                                                                           |
+| --------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| Ethereum source contract          | Verified | [Etherscan](https://sepolia.etherscan.io/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d)                                              |
+| Real borrower collateral          | Verified | [Transaction](https://sepolia.etherscan.io/tx/0xac5418a7f9293ad89de92ffd7c46066cb4292f9e8d26f0a50f6886953206f34a)                         |
+| Real borrower repayment           | Verified | [Transaction](https://sepolia.etherscan.io/tx/0x5949ebb3b25e8776297bfcff0b9fd953d34b6a552a27094e4786ea109210136c)                         |
+| Attestcoin proof generation       | Verified | Source transaction + proof pipeline                                                                                                       |
+| CreditASC deployment              | Verified | [Blockscout](https://creditcoin-testnet.blockscout.com/address/0x3ecb1cD858e422873a2CBe0dDAcAc3C8987Aee1d)                                |
+| CreditASC collateral proof        | Verified | [Transaction](https://creditcoin-testnet.blockscout.com/tx/0x87596ed99f64cf99f207393f26e47d7d1fd81effa9a7aa9e27ccee6b191edd03)            |
+| CreditASC repayment proof         | Verified | [Transaction](https://creditcoin-testnet.blockscout.com/tx/0xa85744feee9b5d9c01b853667cd8b83dfc613c0eaa42efb5f4ac87644814b5f5)            |
+| RiskGuard deployment              | Verified | [Etherscan](https://sepolia.etherscan.io/address/0xbC7115626d7Cf967Fb01Ca808Fc48b4A45220e0C)                                              |
+| Source loan contract registration | Verified | [Transaction](https://creditcoin-testnet.blockscout.com/tx/0x718af3c9f57cabdbc4afac6ef40e95d759ff3dc964b040fa0ac1eb48752abb3b)            |
+| Loan #1 registration              | Verified | [Transaction](https://creditcoin-testnet.blockscout.com/tx/0x4a6b7de43c20969703a1b84170c70e2abd59f07c8cbb5a4287197e068c310d40)            |
+| Loan funding registration         | Verified | [Transaction](https://eth-sepolia.blockscout.com/tx/0x109695384f1b63ecc1228eb7087cc066e23ac8965a24930b8537b238b86d1aac)                   |
+| ERC20 approval                    | Verified | [Transaction](https://eth-sepolia.blockscout.com/tx/0x180a31de7c5f1c33dfbf0aeb44b0652bad134ff959c258658726d7b25865b330)                   |
+| Real 700 TEST funding             | Verified | [Transaction](https://eth-sepolia.blockscout.com/tx/0xd303577e6021927677745a32e432a6f58e9446e48991a7e0364ef349544426c7)                   |
+| Funding Attestcoin proof          | Verified | [Creditcoin transaction](https://creditcoin-testnet.blockscout.com/tx/0xacd75d9c33b64d58ffe07ecc6dff8b5085220a1d2496f26959409619b47540e8) |
+| Loan #1 final state               | Verified | `Status = Funded`                                                                                                                         |
+| Foundry tests                     | Verified | `16 passing`                                                                                                                              |
+| TypeScript                        | Verified | `tsc --noEmit`                                                                                                                            |
+| Production build                  | Verified | Vercel deployment                                                                                                                         |
+| Live frontend                     | Verified | [Open App](https://autonomous-credit-agent.vercel.app/)                                                                                   |
+
+---
+
+# Current System Status
+
+The core system has reached a complete working testnet milestone.
 
 ## Completed
 
 * [x] Next.js application
-* [x] Credit application workflow
-* [x] EVM wallet connection
-* [x] Financial evidence interface
-* [x] AI risk engine
-* [x] Deterministic RiskGuard logic
-* [x] Credit-line lifecycle UI
-* [x] Draw and repayment workflow
-* [x] Transaction history
-* [x] Ethereum Sepolia source contract
-* [x] Real collateral transaction
-* [x] Real repayment transaction
+* [x] Wallet connection
+* [x] Credit application flow
 * [x] Dynamic source-chain evidence discovery
+* [x] Ethereum Sepolia source contract
+* [x] Real borrower collateral transaction
+* [x] Real borrower repayment transaction
 * [x] Attestcoin SDK integration
-* [x] Creditcoin block attestation detection
+* [x] Creditcoin block attestation
 * [x] Real Attestcoin proof generation
-* [x] Real Attestcoin cryptographic verification
-* [x] CreditASC smart contract
-* [x] CreditASC Foundry tests
-* [x] CreditASC deployment on Creditcoin Testnet
-* [x] Real collateral proof execution
-* [x] Real repayment proof execution
+* [x] Native proof verification
+* [x] CreditASC contract
 * [x] Persistent verified evidence on Creditcoin
-* [x] Verified collateral: `1499`
-* [x] Verified repayment count: `1`
-* [x] Verified failed obligations: `0`
-* [x] RiskGuard smart contract
-* [x] RiskGuard application logic
-* [x] 16/16 Foundry tests passing
-* [x] TypeScript type checking passing
-* [x] Production Next.js build passing
+* [x] AI credit risk engine
+* [x] Deterministic RiskGuard
+* [x] Creditcoin source loan contract
+* [x] ASCLoanManager deployment
+* [x] Source loan contract registration
+* [x] Loan #1 registration
+* [x] Real ERC20 approval
+* [x] Real 700 TEST loan funding
+* [x] Funding proof generation
+* [x] Funding proof submission to Creditcoin
+* [x] Final `ASCLoanManager` state verification
+* [x] **Loan #1 = Funded**
+* [x] Credit-line frontend
+* [x] Transaction history UI
+* [x] Foundry tests
+* [x] TypeScript validation
+* [x] Production build
 * [x] Vercel deployment
 
 ---
 
-# In Development
+# Production Extensions
 
-The remaining major execution layer is:
+The demonstrated hackathon system is complete as a working testnet prototype.
+
+The natural production extensions are:
 
 ```text
-AI Decision
-     ↓
-RiskGuard Validation
-     ↓
-Creditcoin Credit Execution
-     ↓
-On-Chain Credit Line
+Testnet
+   ↓
+Security hardening
+   ↓
+Independent audit
+   ↓
+Continuous monitoring
+   ↓
+Multiple source chains
+   ↓
+Production liquidity
+   ↓
+Production credit products
 ```
 
-Specifically:
-
-* [ ] Final AI → RiskGuard → Creditcoin credit-execution transaction
-* [ ] Complete autonomous on-chain credit-line lifecycle
-* [ ] Direct application integration of the complete proof worker
-* [ ] Automated verified-evidence ingestion
-* [ ] Continuous source-chain monitoring
-* [ ] Retry and failure handling
-* [ ] Additional security hardening
-* [ ] Production-grade security audit
-* [ ] Final hackathon presentation polish
-
-The project intentionally does not claim a completed on-chain credit issuance transaction until one is actually submitted and independently verifiable.
-
----
-
-# Roadmap
-
-## Phase 1 — Verified Cross-Chain Credit Prototype
-
-* [x] Ethereum Sepolia source contract
-* [x] Real financial activity
-* [x] Attestcoin proof generation
-* [x] Attestcoin cryptographic verification
-* [x] CreditASC
-* [x] Verified evidence on Creditcoin
-* [x] AI credit decisioning
-* [x] RiskGuard
-* [x] Credit-line frontend
-
-## Phase 2 — Autonomous Worker
-
-* [ ] Continuous source-chain event monitoring
-* [ ] Automatic proof generation
-* [ ] Automatic proof verification
-* [ ] Automatic CreditASC evidence ingestion
-* [ ] Retry and failure handling
-* [ ] End-to-end automated workflow
-
-## Phase 3 — Controlled Credit Execution
-
-* [ ] AI decision commitment
-* [ ] RiskGuard on-chain authorization
-* [ ] Creditcoin credit execution
-* [ ] On-chain credit-line lifecycle
-* [ ] Draw authorization
-* [ ] Repayment accounting
-
-## Phase 4 — Production Credit Infrastructure
-
-* [ ] Production-grade contracts
-* [ ] Security audit
-* [ ] Multiple source chains
-* [ ] Additional financial evidence types
-* [ ] Stronger risk policies
-* [ ] Expanded credit products
+These are scalability and productionization extensions rather than missing pieces of the demonstrated core.
 
 ---
 
 # Vision
 
-The long-term vision is to build infrastructure for **autonomous financial agents** that can:
+The long-term vision is infrastructure for autonomous financial agents that can safely operate across blockchain ecosystems.
+
+The model is:
 
 ```text
-Observe verified financial activity
-             ↓
-      Understand evidence
-             ↓
-       Make decisions
-             ↓
-   Operate within policies
-             ↓
-    Execute controlled actions
+Observe
+   ↓
+Verify
+   ↓
+Understand
+   ↓
+Decide
+   ↓
+Validate
+   ↓
+Execute
+   ↓
+Audit
 ```
 
-The broader goal is to make financial intelligence:
-
-* Portable across chains
-* Cryptographically verifiable
-* Explainable
-* Deterministically bounded
-* Auditable
-
-The fundamental model is:
+The fundamental architecture is:
 
 ```text
 Verified Data
       ↓
-  AI Decision
+AI Intelligence
       ↓
 Deterministic Safety
       ↓
-Controlled Execution
+On-Chain Execution
+```
+
+This can extend beyond credit into:
+
+```text
+DeFi
+RWA
+Insurance
+Treasury Management
+Trade Finance
+Underwriting
+Autonomous Financial Agents
 ```
 
 ---
 
 # Links
 
-### Live Application
+## Project
 
-https://autonomous-credit-agent.vercel.app/
+* **Live Application:** https://autonomous-credit-agent.vercel.app/
+* **GitHub:** https://github.com/shahwali-dev/autonomous-credit-agent
+* **Demo Video:** https://youtu.be/lUKRRT1O2_A
 
-### GitHub Repository
+## Official Protocol Resources
 
-https://github.com/shahwali-dev/autonomous-credit-agent
+* **Gluwa USC SDK:** https://github.com/gluwa/usc-sdk
+* **Attestcoin Protocol Examples:** https://github.com/gluwa/attestcoin-protocol-examples
+* **USC Testnet Bridge Examples:** https://github.com/gluwa/usc-testnet-bridge-examples
+* **Creditcoin USC Networks:** https://github.com/gluwa/creditcoin-usc-networks
 
-### Demo Video
+## Explorers
 
-https://youtu.be/lUKRRT1O2_A
-
-### Ethereum Sepolia Explorer
-
-https://sepolia.etherscan.io/
-
-### Creditcoin Testnet Explorer
-
-https://creditcoin-testnet.blockscout.com/
+* **Ethereum Sepolia:** https://sepolia.etherscan.io/
+* **Creditcoin Testnet:** https://creditcoin-testnet.blockscout.com/
 
 ---
 
@@ -2226,45 +2052,57 @@ https://creditcoin-testnet.blockscout.com/
 Track:
 AI
 
-Core Ecosystem:
+Ecosystem:
 Creditcoin
 
-Key Protocol:
-Attestcoin Protocol
+Protocol:
+Attestcoin
 
 Project:
 Autonomous Cross-Chain Credit Agent
 ```
 
-The project demonstrates how real financial activity from one blockchain can be transformed into:
+The project demonstrates a complete technical path:
 
 ```text
-Cryptographically Verified Evidence
+Real Cross-Chain Financial Activity
         ↓
-Persistent Creditcoin State
+Attestcoin Cryptographic Verification
         ↓
-AI Credit Decisioning
+Persistent Creditcoin Evidence
         ↓
-Deterministic Risk Controls
+AI Credit Intelligence
         ↓
-Controlled Credit Execution
+Deterministic RiskGuard
+        ↓
+Real Creditcoin Loan Infrastructure
+        ↓
+Real Source-Chain Funding
+        ↓
+Attestcoin Funding Proof
+        ↓
+Loan #1 = FUNDED
 ```
 
-The currently demonstrated on-chain milestone is the complete:
+The key architectural separation is:
 
 ```text
-Source Transaction
-        ↓
-Attestcoin Proof
-        ↓
-Native Verification
-        ↓
-CreditASC.execute()
-        ↓
-Persistent Verified Evidence
+Attestcoin
+    = Truth
+
+AI Agent
+    = Intelligence
+
+RiskGuard
+    = Deterministic Safety
+
+Creditcoin
+    = Execution
 ```
 
-The final autonomous credit issuance layer remains in development and is explicitly identified as such.
+The result is not simply an AI credit demo.
+
+It is a working testnet demonstration of how **cryptographically verified cross-chain financial evidence can feed an AI credit agent and connect to real Creditcoin loan infrastructure.**
 
 ---
 
