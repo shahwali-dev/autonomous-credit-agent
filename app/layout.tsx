@@ -39,14 +39,9 @@ export const metadata: Metadata = {
   creator: "Autonomous Credit Agent",
   metadataBase: new URL("https://autonomous-credit-agent.vercel.app"),
   icons: {
-    icon: [
-      {
-        url: "/favicon.png",
-        type: "image/png",
-      },
-    ],
-    shortcut: "/favicon.png",
-    apple: "/favicon.png",
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+    apple: "/favicon.svg",
   },
   openGraph: {
     title: "Autonomous Credit Agent",
