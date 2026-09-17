@@ -3,7 +3,7 @@ out = "out"
 src = "contracts"
 test = "tests"
 libs = ["lib"]
-remappings = ["@gluwa/asc-contracts/=node_modules/@gluwa/asc-contracts/"]
+remappings = ["@gluwa/asc-contracts/=node_modules/@gluwa/asc-contracts/", "@openzeppelin/contracts/=node_modules/@openzeppelin/contracts/"]
 
 solc_version = "0.8.30"
 optimizer = true

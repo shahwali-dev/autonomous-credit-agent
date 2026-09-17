@@ -15,7 +15,7 @@ export default function AgentPage() {
   const setAIDecision = useCreditStore((state) => state.setAIDecision);
 
   useEffect(() => {
-    if (!evidence.verified || aiDecision) {
+    if (!evidence.verified) {
       return;
     }
 
@@ -24,7 +24,20 @@ export default function AgentPage() {
       application
     );
 
-    setAIDecision(decision);
+    const decisionChanged =
+      !aiDecision ||
+      aiDecision.risk !== decision.risk ||
+      aiDecision.confidence !== decision.confidence ||
+      aiDecision.recommendedAmount !==
+      decision.recommendedAmount ||
+      aiDecision.recommendedDuration !==
+      decision.recommendedDuration ||
+      aiDecision.recommendation !==
+      decision.recommendation;
+
+    if (decisionChanged) {
+      setAIDecision(decision);
+    }
   }, [
     evidence,
     application,
@@ -68,7 +81,7 @@ export default function AgentPage() {
         evidence.collateral >=
           (aiDecision?.recommendedAmount ??
             application.requestedAmount) *
-            0.5
+          0.5
           ? "Positive"
           : "Negative",
     },
@@ -123,7 +136,7 @@ export default function AgentPage() {
         : "Waiting for AI decision",
       status:
         decisionStatus === "APPROVED" ||
-        decisionStatus === "REJECTED"
+          decisionStatus === "REJECTED"
           ? "Ready"
           : "Pending",
     },
@@ -156,29 +169,26 @@ export default function AgentPage() {
           </div>
 
           <div
-            className={`rounded-xl border px-4 py-3 ${
-              hasDecision
+            className={`rounded-xl border px-4 py-3 ${hasDecision
                 ? "border-emerald-400/20 bg-emerald-400/[0.04]"
                 : "border-amber-400/20 bg-amber-400/[0.04]"
-            }`}
+              }`}
           >
             <div className="text-[10px] uppercase tracking-[0.18em] text-zinc-600">
               Agent status
             </div>
 
             <div
-              className={`mt-1 flex items-center gap-2 text-xs ${
-                hasDecision
+              className={`mt-1 flex items-center gap-2 text-xs ${hasDecision
                   ? "text-emerald-300"
                   : "text-amber-300"
-              }`}
+                }`}
             >
               <span
-                className={`h-1.5 w-1.5 rounded-full ${
-                  hasDecision
+                className={`h-1.5 w-1.5 rounded-full ${hasDecision
                     ? "bg-emerald-400"
                     : "bg-amber-400"
-                }`}
+                  }`}
               />
 
               {hasDecision
@@ -201,26 +211,24 @@ export default function AgentPage() {
                   </div>
 
                   <div
-                    className={`mt-3 text-5xl font-semibold tracking-tight ${
-                      !hasDecision
+                    className={`mt-3 text-5xl font-semibold tracking-tight ${!hasDecision
                         ? "text-zinc-500"
                         : isApproved
                           ? "text-emerald-300"
                           : "text-red-300"
-                    }`}
+                      }`}
                   >
                     {aiDecision?.risk ?? "PENDING"}
                   </div>
                 </div>
 
                 <div
-                  className={`rounded-full border px-3 py-1.5 text-[10px] ${
-                    !hasDecision
+                  className={`rounded-full border px-3 py-1.5 text-[10px] ${!hasDecision
                       ? "border-zinc-400/20 bg-zinc-400/5 text-zinc-500"
                       : isApproved
                         ? "border-emerald-400/20 bg-emerald-400/5 text-emerald-300"
                         : "border-red-400/20 bg-red-400/5 text-red-300"
-                  }`}
+                    }`}
                 >
                   RECOMMENDATION:{" "}
                   {aiDecision?.recommendation ?? "PENDING"}
@@ -298,11 +306,10 @@ export default function AgentPage() {
                 </span>
 
                 <span
-                  className={`text-xs ${
-                    isEvidenceVerified
+                  className={`text-xs ${isEvidenceVerified
                       ? "text-cyan-300"
                       : "text-zinc-500"
-                  }`}
+                    }`}
                 >
                   {isEvidenceVerified
                     ? "Attestcoin • Verified"
@@ -372,13 +379,12 @@ export default function AgentPage() {
                   </div>
 
                   <span
-                    className={`text-[9px] uppercase tracking-wider ${
-                      factor.impact === "Positive"
+                    className={`text-[9px] uppercase tracking-wider ${factor.impact === "Positive"
                         ? "text-emerald-300"
                         : factor.impact === "Neutral"
                           ? "text-amber-300"
                           : "text-red-300"
-                    }`}
+                      }`}
                   >
                     {factor.impact}
                   </span>
@@ -386,13 +392,12 @@ export default function AgentPage() {
 
                 <div className="mt-4 h-1 overflow-hidden rounded-full bg-white/5">
                   <div
-                    className={`h-full rounded-full ${
-                      factor.impact === "Positive"
+                    className={`h-full rounded-full ${factor.impact === "Positive"
                         ? "bg-emerald-400/60"
                         : factor.impact === "Neutral"
                           ? "bg-amber-400/60"
                           : "bg-red-400/60"
-                    }`}
+                      }`}
                     style={{
                       width: riskBarWidth(factor.impact),
                     }}
@@ -527,15 +532,14 @@ export default function AgentPage() {
                   </div>
 
                   <div
-                    className={`mt-2 text-sm font-semibold ${
-                      label === "Decision"
+                    className={`mt-2 text-sm font-semibold ${label === "Decision"
                         ? value === "APPROVE"
                           ? "text-emerald-300"
                           : value === "REJECT"
                             ? "text-red-300"
                             : "text-zinc-300"
                         : "text-zinc-300"
-                    }`}
+                      }`}
                   >
                     {value}
                   </div>
@@ -549,11 +553,10 @@ export default function AgentPage() {
                 if (!hasDecision) return;
                 router.push("/decision");
               }}
-              className={`mt-6 w-full rounded-xl border px-5 py-3 text-sm font-medium transition ${
-                hasDecision
+              className={`mt-6 w-full rounded-xl border px-5 py-3 text-sm font-medium transition ${hasDecision
                   ? "border-emerald-400/20 bg-emerald-400/5 text-emerald-300 hover:bg-emerald-400/10"
                   : "cursor-not-allowed border-white/5 bg-white/[0.02] text-zinc-600"
-              }`}
+                }`}
             >
               {hasDecision
                 ? "Continue to RiskGuard →"
@@ -595,13 +598,12 @@ export default function AgentPage() {
                 </div>
 
                 <span
-                  className={`hidden rounded-md border px-2 py-1 text-[9px] sm:block ${
-                    step.status === "Complete"
+                  className={`hidden rounded-md border px-2 py-1 text-[9px] sm:block ${step.status === "Complete"
                       ? "border-emerald-400/10 bg-emerald-400/5 text-emerald-300"
                       : step.status === "Ready"
                         ? "border-cyan-400/10 bg-cyan-400/5 text-cyan-300"
                         : "border-white/5 bg-white/[0.02] text-zinc-600"
-                  }`}
+                    }`}
                 >
                   {step.status}
                 </span>
