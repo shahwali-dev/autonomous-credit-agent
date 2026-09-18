@@ -9,7 +9,7 @@
   ·
   <a href="https://github.com/shahwali-dev/autonomous-credit-agent">GitHub</a>
   ·
-  <a href="https://youtu.be/lUKRRT1O2_A">Demo Video</a>
+  <a href="https://youtu.be/oMpFVnARkwk">Demo Video</a>
 </p>
 
 <p align="center">
@@ -555,7 +555,7 @@ https://github.com/shahwali-dev/autonomous-credit-agent
 
 ### Demo Video
 
-https://youtu.be/lUKRRT1O2_A
+https://youtu.be/oMpFVnARkwk
 
 ---
 
@@ -2028,7 +2028,7 @@ Autonomous Financial Agents
 
 * **Live Application:** https://autonomous-credit-agent.vercel.app/
 * **GitHub:** https://github.com/shahwali-dev/autonomous-credit-agent
-* **Demo Video:** https://youtu.be/lUKRRT1O2_A
+* **Demo Video:** https://youtu.be/oMpFVnARkwk
 
 ## Official Protocol Resources
 
