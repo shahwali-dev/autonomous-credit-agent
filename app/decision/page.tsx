@@ -1,499 +1,1689 @@
 "use client";
 
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import {
+  ArrowRight,
+  BrainCircuit,
+  Check,
+  CheckCircle2,
+  CircleDashed,
+  Fingerprint,
+  LockKeyhole,
+  Network,
+  ShieldCheck,
+  Sparkles,
+  Wallet,
+  Zap,
+  Database,
+  Activity,
+  ExternalLink,
+} from "lucide-react";
+
 import { validateRiskGuard } from "@/lib/engine/riskguard";
 import { useCreditStore } from "@/lib/store/credit-store";
 
+
+const SEPOLIA_EXPLORER =
+  "https://eth-sepolia.blockscout.com";
+
+
+const CREDITCOIN_EXPLORER =
+  "https://creditcoin-testnet.blockscout.com";
+
+
 const executionSteps = [
-  ["01", "AI recommendation", "Credit terms generated", "COMPLETE"],
-  ["02", "RiskGuard validation", "All deterministic policies passed", "COMPLETE"],
-  ["03", "Creditcoin authorization", "Execution is ready", "READY"],
-  ["04", "Credit execution", "Awaiting user authorization", "PENDING"],
+  {
+    number: "01",
+    title: "AI recommendation",
+    detail: "Credit terms generated from verified evidence",
+    layer: "INTELLIGENCE",
+  },
+  {
+    number: "02",
+    title: "RiskGuard validation",
+    detail: "Deterministic policies validate AI output",
+    layer: "SAFETY",
+  },
+  {
+    number: "03",
+    title: "Creditcoin authorization",
+    detail: "Execution permission prepared",
+    layer: "PROTOCOL",
+  },
+  {
+    number: "04",
+    title: "Credit execution",
+    detail: "Credit line creation on Creditcoin",
+    layer: "EXECUTION",
+  },
 ];
 
+
+function formatCurrency(
+  value: number | undefined | null
+) {
+  return `$${(value ?? 0).toLocaleString()}`;
+}
+
+
+function shortenAddress(
+  address?: string | null
+) {
+  if (!address) return "Not connected";
+
+  if (address.length < 12) {
+    return address;
+  }
+
+  return `${address.slice(0, 6)}…${address.slice(-4)}`;
+}
+
+
+
 export default function DecisionPage() {
-  const [executing, setExecuting] = useState(false);
-  const [executionError, setExecutionError] = useState("");
+
   const router = useRouter();
 
-  const aiDecision = useCreditStore((state) => state.aiDecision);
-  const application = useCreditStore((state) => state.application);
-  const evidence = useCreditStore((state) => state.evidence);
-  const decisionStatus = useCreditStore((state) => state.decisionStatus);
-  const executeCredit = useCreditStore(
-    (state) => state.executeCredit
-  );
-  const handleExecute = async () => {
-    if (!riskGuardPassed || !aiDecision) return;
 
-    setExecuting(true);
-    setExecutionError("");
+  const aiDecision =
+    useCreditStore(
+      (state) => state.aiDecision
+    );
 
-    try {
-      const response = await fetch("/api/riskguard/validate", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          amount: aiDecision.recommendedAmount,
-          durationDays: aiDecision.recommendedDuration,
-          collateral: application.collateral,
-          evidenceVerified: evidence.verified,
-          risk: aiDecision.risk,
-        }),
-      });
+  const application =
+    useCreditStore(
+      (state) => state.application
+    );
 
-      const data = await response.json();
+  const evidence =
+    useCreditStore(
+      (state) => state.evidence
+    );
 
-      if (!data.success || !data.validated) {
-        throw new Error(
-          data.error || "RiskGuard validation failed."
-        );
+
+  const decisionStatus =
+    useCreditStore(
+      (state) => state.decisionStatus
+    );
+
+
+  const executeCredit =
+    useCreditStore(
+      (state) => state.executeCredit
+    );
+
+
+  const [
+    executing,
+    setExecuting
+  ] = useState(false);
+
+
+  const [
+    executionError,
+    setExecutionError
+  ] = useState("");
+
+
+
+  const riskGuardResult =
+    useMemo(
+      () =>
+        validateRiskGuard(
+          aiDecision,
+          application,
+          evidence
+        ),
+      [
+        aiDecision,
+        application,
+        evidence,
+      ]
+    );
+
+
+  const riskGuardPassed =
+    riskGuardResult.passed;
+
+
+
+  const policyChecks =
+    riskGuardResult.checks;
+
+
+
+  const handleExecute =
+    async () => {
+
+      if (
+        !riskGuardPassed ||
+        !aiDecision
+      ) {
+        return;
       }
 
-      executeCredit();
-      router.push("/credit-lines");
-    } catch (error) {
-      console.error("RiskGuard execution failed:", error);
 
-      setExecutionError(
-        error instanceof Error
-          ? error.message
-          : "RiskGuard validation failed."
-      );
-    } finally {
-      setExecuting(false);
-    }
-  };
+      setExecuting(true);
+
+      setExecutionError("");
+
+
+      try {
+
+        const response =
+          await fetch(
+            "/api/riskguard/validate",
+            {
+              method: "POST",
+
+              headers: {
+                "Content-Type":
+                  "application/json",
+              },
+
+
+              body: JSON.stringify({
+
+                amount:
+                  aiDecision.recommendedAmount,
+
+
+                durationDays:
+                  aiDecision.recommendedDuration,
+
+
+                collateral:
+                  application.collateral,
+
+
+                evidenceVerified:
+                  evidence.verified,
+
+
+                risk:
+                  aiDecision.risk,
+
+              }),
+            }
+          );
+
+
+        const data =
+          await response.json();
+
+
+
+        if (
+          !data.success ||
+          !data.validated
+        ) {
+          throw new Error(
+            data.error ??
+            "RiskGuard validation failed"
+          );
+        }
+
+
+
+        executeCredit();
+
+
+        router.push(
+          "/credit-lines"
+        );
+
+
+
+      } catch (error) {
+
+
+        setExecutionError(
+
+          error instanceof Error
+
+            ? error.message
+
+            : "Execution failed"
+
+        );
+
+
+      } finally {
+
+        setExecuting(false);
+
+      }
+
+    };
+
+
+
+
 
   const decisionFactors = [
-    [
-      "Risk level",
-      aiDecision?.risk ?? "PENDING",
-    ],
-    [
-      "AI confidence",
-      `${aiDecision?.confidence ?? 0}%`,
-    ],
-    [
-      "Requested credit",
-      `$${application.requestedAmount?.toLocaleString() ?? "0"}`,
-    ],
-    [
-      "Recommended credit",
-      `$${aiDecision?.recommendedAmount?.toLocaleString() ?? "0"}`,
-    ],
-    [
-      "Duration",
-      `${aiDecision?.recommendedDuration ?? 0} days`,
-    ],
-    [
-      "Verified collateral",
-      `$${application.collateral?.toLocaleString() ?? "0"}`,
-    ],
+    {
+      label:
+        "Risk classification",
+
+      value:
+        aiDecision?.risk ??
+        "PENDING",
+    },
+
+
+    {
+      label:
+        "AI confidence",
+
+      value:
+        `${aiDecision?.confidence ?? 0}%`,
+    },
+
+
+    {
+      label:
+        "Requested credit",
+
+      value:
+        formatCurrency(
+          application.requestedAmount
+        ),
+    },
+
+
+    {
+      label:
+        "Recommended credit",
+
+      value:
+        formatCurrency(
+          aiDecision?.recommendedAmount
+        ),
+    },
+
+
+    {
+      label:
+        "Repayment duration",
+
+      value:
+        `${aiDecision?.recommendedDuration ?? 0} days`,
+    },
+
+
+    {
+      label:
+        "Verified collateral",
+
+      value:
+        formatCurrency(
+          application.collateral
+        ),
+    },
+
   ];
-  const riskGuardResult = validateRiskGuard(
-    aiDecision,
-    application,
-    evidence
-  );
 
-  const riskGuardPassed = riskGuardResult.passed;
 
-  const policyChecks = riskGuardResult.checks.map(
-    (check) => [check.name, check.value, check.passed ? "PASS" : "FAIL"] as const
-  );
+
 
   return (
-    <main className="min-h-screen bg-[#07090d] text-white">
-      <div className="mx-auto max-w-7xl px-5 py-8 md:px-8">
-        {/* Header */}
-        <div className="flex flex-col gap-5 border-b border-white/10 pb-8 md:flex-row md:items-end md:justify-between">
-          <div>
-            <div className="text-[10px] uppercase tracking-[0.22em] text-cyan-300">
-              Decision Center
+
+    <main className="
+min-h-screen
+overflow-hidden
+bg-[#05070b]
+text-zinc-100
+">
+
+
+      <div className="
+mx-auto
+max-w-[1500px]
+px-4
+py-6
+sm:px-6
+lg:px-8
+lg:py-10
+">
+
+
+
+        {/* SYSTEM HEADER */}
+
+        <div className="
+mb-6
+flex
+flex-col
+gap-4
+rounded-2xl
+border
+border-white/[0.07]
+bg-[#080b10]
+px-5
+py-4
+backdrop-blur-xl
+sm:flex-row
+sm:items-center
+sm:justify-between
+">
+
+
+          <div className="
+flex
+items-center
+gap-3
+">
+
+
+            <div className="
+flex
+h-10
+w-10
+items-center
+justify-center
+rounded-xl
+border
+border-cyan-400/20
+bg-cyan-400/[0.06]
+">
+
+              <BrainCircuit
+                className="
+h-5
+w-5
+text-cyan-300
+"
+              />
+
             </div>
 
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
-              Autonomous credit decision
-            </h1>
 
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-500">
-              The AI recommendation has been evaluated against deterministic
-              RiskGuard policies before any credit execution can occur.
-            </p>
+
+            <div>
+
+
+              <div className="
+text-[10px]
+uppercase
+tracking-[0.22em]
+text-zinc-600
+">
+
+                Autonomous Credit Infrastructure
+
+              </div>
+
+
+
+              <div className="
+mt-1
+font-mono
+text-xs
+text-zinc-400
+">
+
+                DECISION-CORE / RISK-AUTHORIZATION
+
+              </div>
+
+
+            </div>
+
+
           </div>
 
-          <div className="rounded-xl border border-emerald-400/20 bg-emerald-400/[0.04] px-4 py-3">
-            <div className="text-[10px] uppercase tracking-[0.18em] text-zinc-600">
-              Final status
+
+
+
+
+          <div className="
+flex
+items-center
+gap-2
+">
+
+
+            <div className="
+flex
+items-center
+gap-2
+rounded-full
+border
+border-emerald-400/15
+bg-emerald-400/[0.04]
+px-3
+py-1.5
+">
+
+
+              <span className="
+h-2
+w-2
+rounded-full
+bg-emerald-400
+animate-pulse
+"/>
+
+
+              <span className="
+text-[9px]
+uppercase
+tracking-[0.15em]
+text-emerald-300
+">
+
+                {
+                  decisionStatus === "APPROVED"
+                    ?
+                    "READY TO EXECUTE"
+                    :
+                    decisionStatus
+                }
+
+              </span>
+
+
             </div>
 
-            <div className="mt-1 flex items-center gap-2 text-xs text-emerald-300">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
-              {decisionStatus === "APPROVED"
-                ? "READY TO EXECUTE"
-                : decisionStatus}
+
+
+            <div className="
+rounded-full
+border
+border-white/[0.06]
+px-3
+py-1.5
+text-[9px]
+text-zinc-600
+">
+
+              TESTNET
+
             </div>
+
+
           </div>
+
+
+
         </div>
 
-        {/* Decision Banner */}
-        <section className="mt-8 relative overflow-hidden rounded-2xl border border-emerald-400/20 bg-gradient-to-br from-[#102119] via-[#0b1511] to-[#0b0f14] p-6 md:p-8">
-          <div className="absolute -right-20 -top-20 h-72 w-72 rounded-full bg-emerald-400/10 blur-3xl" />
 
-          <div className="relative flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-400/10 text-emerald-300">
-                  ✓
-                </span>
 
-                <span className="text-[10px] uppercase tracking-[0.2em] text-emerald-300">
-                  {aiDecision?.recommendation === "APPROVE"
-                    ? "Credit approved"
-                    : aiDecision?.recommendation === "REJECT"
-                      ? "Credit rejected"
-                      : "Credit pending"}
-                </span>
-              </div>
 
-              <div className="mt-5 text-5xl font-semibold tracking-tight text-emerald-300 md:text-6xl">
-                $1,000
-              </div>
 
-              <div className="mt-2 text-sm text-zinc-500">
-                Recommended autonomous credit line
-              </div>
-            </div>
 
-            <div className="grid gap-3 sm:grid-cols-3 lg:w-[520px]">
-              <div className="rounded-xl border border-white/5 bg-black/20 p-4">
-                <div className="text-[10px] text-zinc-600">
-                  Risk
-                </div>
+        {/* PAGE TITLE */}
 
-                <div className="mt-2 text-lg font-semibold text-emerald-300">
-                  LOW
-                </div>
-              </div>
 
-              <div className="rounded-xl border border-white/5 bg-black/20 p-4">
-                <div className="text-[10px] text-zinc-600">
-                  Confidence
-                </div>
+        <header
+          className="
+flex
+flex-col
+justify-between
+gap-6
+xl:flex-row
+xl:items-end
+">
 
-                <div className="mt-2 text-lg font-semibold">
-                  94%
-                </div>
-              </div>
 
-              <div className="rounded-xl border border-white/5 bg-black/20 p-4">
-                <div className="text-[10px] text-zinc-600">
-                  Duration
-                </div>
-
-                <div className="mt-2 text-lg font-semibold">
-                  30 days
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {/* AI vs RiskGuard */}
-        <section className="mt-6 grid gap-6 lg:grid-cols-2">
-          {/* AI Decision */}
-          <div className="rounded-2xl border border-cyan-400/10 bg-[#0b0f14] p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-sm font-semibold">
-                  AI recommendation
-                </div>
-
-                <div className="mt-1 text-xs text-zinc-600">
-                  Autonomous risk assessment
-                </div>
-              </div>
-
-              <span className="rounded-md border border-cyan-400/20 bg-cyan-400/5 px-2.5 py-1 text-[9px] text-cyan-300">
-                AI OUTPUT
-              </span>
-            </div>
-
-            <div className="mt-6 grid gap-3 sm:grid-cols-2">
-              {decisionFactors.map(([label, value]) => (
-                <div
-                  key={label}
-                  className="rounded-xl border border-white/5 bg-black/20 p-4"
-                >
-                  <div className="text-[10px] text-zinc-600">
-                    {label}
-                  </div>
-
-                  <div
-                    className={`mt-2 text-sm font-semibold ${label === "Risk level"
-                      ? "text-emerald-300"
-                      : "text-zinc-300"
-                      }`}
-                  >
-                    {value}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* RiskGuard */}
-          <div className="rounded-2xl border border-emerald-400/10 bg-[#0b0f14] p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-sm font-semibold">
-                  RiskGuard validation
-                </div>
-
-                <div className="mt-1 text-xs text-zinc-600">
-                  Deterministic policy enforcement
-                </div>
-              </div>
-
-              <span
-                className={`rounded-md border px-2.5 py-1 text-[9px] ${riskGuardPassed
-                  ? "border-emerald-400/20 bg-emerald-400/5 text-emerald-300"
-                  : "border-red-400/20 bg-red-400/5 text-red-300"
-                  }`}
-              >
-                {riskGuardPassed ? "ALL PASSED" : "POLICY FAILED"}
-              </span>
-            </div>
-
-            <div className="mt-6 space-y-3">
-              {policyChecks.map(([label, value, status]) => (
-                <div
-                  key={label}
-                  className="flex items-center gap-4 rounded-xl border border-white/5 bg-black/20 p-4"
-                >
-                  <div className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-emerald-400/10 text-xs text-emerald-300">
-                    ✓
-                  </div>
-
-                  <div className="min-w-0 flex-1">
-                    <div className="text-xs text-zinc-400">
-                      {label}
-                    </div>
-
-                    <div className="mt-1 text-[10px] text-zinc-700">
-                      {value}
-                    </div>
-                  </div>
-
-                  <span className="text-[9px] font-medium text-emerald-300">
-                    {status}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
-        {/* Comparison */}
-        <section className="mt-6 rounded-2xl border border-white/10 bg-[#0b0f14] p-6 md:p-8">
           <div>
-            <div className="text-sm font-semibold">
-              Decision comparison
+
+
+            <div className="
+flex
+items-center
+gap-2
+text-[10px]
+uppercase
+tracking-[0.22em]
+text-cyan-300/70
+">
+
+              <Sparkles
+                className="
+h-3
+w-3
+"
+              />
+
+              Autonomous authorization layer
+
             </div>
 
-            <div className="mt-1 text-xs text-zinc-600">
-              AI recommendation versus deterministic execution constraints.
-            </div>
+
+
+            <h1
+              className="
+mt-3
+text-4xl
+font-semibold
+tracking-tight
+text-white
+sm:text-5xl
+"
+            >
+
+              Decision Center
+
+            </h1>
+
+
+
+            <p
+              className="
+mt-4
+max-w-2xl
+text-sm
+leading-7
+text-zinc-500
+"
+            >
+
+              AI generated credit recommendations validated by
+              deterministic RiskGuard policies before Creditcoin execution.
+
+            </p>
+
+
           </div>
 
-          <div className="mt-6 overflow-hidden rounded-xl border border-white/5">
-            <div className="grid grid-cols-[1fr_1fr_1fr] border-b border-white/5 bg-black/20 px-5 py-3 text-[9px] uppercase tracking-wider text-zinc-700">
-              <span>Parameter</span>
-              <span>AI recommendation</span>
-              <span>RiskGuard limit</span>
-            </div>
 
-            {[
-              [
-                "Credit amount",
-                `$${aiDecision?.recommendedAmount?.toLocaleString() ?? "0"}`,
-                "≤ $5,000",
-              ],
-              [
-                "Duration",
-                `${aiDecision?.recommendedDuration ?? 0} days`,
-                "≤ 90 days",
-              ],
-              [
-                "Collateral",
-                `$${evidence.collateral?.toLocaleString() ?? "0"}`,
-                "≥ 50% coverage",
-              ],
-              [
-                "Risk",
-                aiDecision?.risk ?? "PENDING",
-                "LOW / MEDIUM",
-              ],
-              [
-                "Evidence",
-                evidence.verified ? "Verified" : "Not verified",
-                "Required",
-              ],
-            ].map(([label, recommendation, limit]) => (
-              <div
-                key={label}
-                className="grid grid-cols-[1fr_1fr_1fr] border-b border-white/5 px-5 py-4 last:border-0"
-              >
-                <span className="text-xs text-zinc-500">
-                  {label}
-                </span>
 
-                <span className="text-xs text-zinc-300">
-                  {recommendation}
-                </span>
 
-                <span className="text-xs text-emerald-300">
-                  {limit}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
 
-        {/* Execution Pipeline */}
-        <section className="mt-6 rounded-2xl border border-white/10 bg-[#0b0f14] p-6 md:p-8">
-          <div>
-            <div className="text-sm font-semibold">
-              Execution pipeline
-            </div>
+          <a
 
-            <div className="mt-1 text-xs text-zinc-600">
-              The complete path from AI decision to Creditcoin execution.
-            </div>
-          </div>
+            href={
+              `${SEPOLIA_EXPLORER}/address/${application.walletAddress ?? ""}`
+            }
 
-          <div className="mt-7 grid gap-4 md:grid-cols-4">
-            {executionSteps.map(
-              ([number, title, detail, status], index) => (
-                <div key={number} className="relative">
-                  <div className="rounded-xl border border-white/5 bg-black/20 p-5">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-[10px] text-cyan-400/60">
-                        {number}
-                      </span>
+            target="_blank"
 
-                      <span
-                        className={`h-2 w-2 rounded-full ${status === "COMPLETE"
-                          ? "bg-emerald-400"
-                          : status === "READY"
-                            ? "bg-cyan-300"
-                            : "bg-zinc-700"
-                          }`}
-                      />
-                    </div>
+            rel="noreferrer"
 
-                    <div className="mt-5 text-xs font-medium text-zinc-300">
-                      {title}
-                    </div>
+            className="
+flex
+items-center
+gap-2
+rounded-xl
+border
+border-white/[0.08]
+bg-white/[0.02]
+px-4
+py-2.5
+text-xs
+text-zinc-400
+"
 
-                    <div className="mt-2 text-[10px] leading-5 text-zinc-600">
-                      {detail}
-                    </div>
+          >
 
-                    <div
-                      className={`mt-4 text-[9px] uppercase tracking-wider ${status === "COMPLETE"
-                        ? "text-emerald-300"
-                        : status === "READY"
-                          ? "text-cyan-300"
-                          : "text-zinc-700"
-                        }`}
-                    >
-                      {status}
-                    </div>
-                  </div>
+            <Wallet
+              className="
+h-3.5
+w-3.5
+"/>
 
-                  {index < executionSteps.length - 1 && (
-                    <div className="absolute right-[-10px] top-1/2 hidden text-zinc-700 md:block">
-                      →
-                    </div>
-                  )}
-                </div>
-              )
+            {shortenAddress(
+              application.walletAddress
             )}
-          </div>
-        </section>
 
-        {/* Final Authorization */}
-        <section className="mt-6 overflow-hidden rounded-2xl border border-cyan-400/20 bg-gradient-to-r from-cyan-400/[0.05] to-transparent p-6 md:p-8">
-          <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+            <ExternalLink
+              className="
+h-3
+w-3
+"
+            />
+
+          </a>
+
+
+        </header>
+        {/* DECISION CORE */}
+
+        <section className="
+mt-8
+overflow-hidden
+rounded-3xl
+border
+border-cyan-400/15
+bg-gradient-to-br
+from-[#0c1720]
+via-[#080d13]
+to-[#05070b]
+p-6
+sm:p-8
+">
+
+
+          <div className="
+flex
+flex-col
+gap-4
+sm:flex-row
+sm:items-start
+sm:justify-between
+">
+
+
             <div>
-              <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-cyan-300">
-                <span className="h-1.5 w-1.5 rounded-full bg-cyan-300" />
-                Creditcoin execution
+
+
+              <div className="
+flex
+items-center
+gap-2
+text-[10px]
+uppercase
+tracking-[0.2em]
+text-zinc-600
+">
+
+                <BrainCircuit
+                  className="
+h-3.5
+w-3.5
+text-cyan-300
+"/>
+
+                AI Decision Core
+
               </div>
 
-              <h2 className="mt-3 text-xl font-semibold">
-                {riskGuardPassed
-                  ? "All safety checks passed."
-                  : "Credit execution blocked."}
+
+
+              <h2 className="
+mt-3
+text-2xl
+font-semibold
+tracking-tight
+text-white
+">
+
+                Autonomous credit recommendation
+
               </h2>
 
-              <p className="mt-2 max-w-2xl text-xs leading-6 text-zinc-600">
-                {riskGuardPassed
-                  ? "RiskGuard has validated the AI-generated credit terms. The credit line is now ready for bounded execution on Creditcoin."
-                  : riskGuardResult.reason}
+
+
+              <p className="
+mt-2
+text-xs
+text-zinc-600
+">
+
+                AI proposes terms. RiskGuard controls execution.
+
               </p>
+
+
             </div>
+
+
+
+            <div className="
+rounded-full
+border
+border-emerald-400/15
+bg-emerald-400/[0.04]
+px-3
+py-1.5
+text-[9px]
+uppercase
+tracking-[0.15em]
+text-emerald-300
+">
+
+              Decision generated
+
+            </div>
+
+
+          </div>
+
+
+
+
+
+
+          <div className="
+mt-8
+grid
+gap-6
+lg:grid-cols-[1fr_320px]
+">
+
+
+
+            <div>
+
+
+              <div className="
+text-[10px]
+uppercase
+tracking-[0.18em]
+text-zinc-600
+">
+
+                Recommended credit line
+
+              </div>
+
+
+
+              <div className="
+mt-3
+text-6xl
+font-semibold
+tracking-tight
+text-emerald-300
+">
+
+                {
+                  formatCurrency(
+                    aiDecision?.recommendedAmount
+                  )
+                }
+
+              </div>
+
+
+
+              <div className="
+mt-2
+text-sm
+text-zinc-500
+">
+
+                AI generated autonomous credit limit
+
+              </div>
+
+
+
+
+
+              <div className="
+mt-6
+grid
+gap-3
+sm:grid-cols-3
+">
+
+
+                {
+                  decisionFactors
+                    .slice(0, 3)
+                    .map(
+                      (item) => (
+                        <div
+                          key={item.label}
+                          className="
+rounded-xl
+border
+border-white/[0.06]
+bg-black/20
+p-4
+"
+                        >
+
+
+                          <div className="
+text-[9px]
+uppercase
+tracking-[0.15em]
+text-zinc-700
+">
+
+                            {item.label}
+
+                          </div>
+
+
+                          <div className="
+mt-2
+text-lg
+font-semibold
+text-zinc-200
+">
+
+                            {item.value}
+
+                          </div>
+
+
+                        </div>
+                      )
+                    )
+                }
+
+
+
+              </div>
+
+
+            </div>
+
+
+
+
+
+
+
+            {/* Confidence */}
+
+
+            <div className="
+flex
+items-center
+justify-center
+">
+
+
+              <div className="
+relative
+flex
+h-52
+w-52
+items-center
+justify-center
+rounded-full
+border
+border-cyan-400/20
+bg-[#071016]
+">
+
+
+                <div className="
+absolute
+inset-5
+rounded-full
+border
+border-dashed
+border-cyan-400/10
+"/>
+
+
+
+                <div className="
+text-center
+">
+
+
+                  <div className="
+text-5xl
+font-semibold
+text-white
+">
+
+                    {
+                      aiDecision?.confidence ?? 0
+                    }
+
+                    <span className="
+text-xl
+text-cyan-300
+">
+                      %
+                    </span>
+
+
+                  </div>
+
+
+                  <div className="
+mt-2
+text-[9px]
+uppercase
+tracking-[0.18em]
+text-zinc-600
+">
+
+                    AI confidence
+
+                  </div>
+
+
+                </div>
+
+
+              </div>
+
+
+            </div>
+
+
+          </div>
+
+
+        </section>
+
+
+
+
+
+
+
+        {/* AI VS RISKGUARD */}
+
+        <section className="
+mt-6
+grid
+gap-6
+lg:grid-cols-2
+">
+
+
+
+          <div className="
+rounded-3xl
+border
+border-cyan-400/10
+bg-[#090c11]
+p-6
+">
+
+
+            <div className="
+flex
+items-center
+gap-2
+text-[10px]
+uppercase
+tracking-[0.18em]
+text-cyan-300
+">
+
+
+              <BrainCircuit
+                className="
+h-3.5
+w-3.5
+"/>
+
+              AI Brain
+
+            </div>
+
+
+
+            <h3 className="
+mt-3
+text-xl
+font-semibold
+">
+
+              Recommendation engine
+
+            </h3>
+
+
+
+            <div className="
+mt-6
+space-y-3
+">
+
+
+              {
+                [
+                  "Analyzes verified financial evidence",
+                  "Calculates borrower risk profile",
+                  "Generates credit amount and duration",
+                  "Provides explainable reasoning",
+                ]
+                  .map(
+                    (text) => (
+                      <div
+                        key={text}
+                        className="
+flex
+items-center
+gap-3
+rounded-xl
+border
+border-white/[0.06]
+bg-black/20
+p-3
+"
+                      >
+
+                        <CheckCircle2
+                          className="
+h-4
+w-4
+text-cyan-300
+"/>
+
+                        <span className="
+text-xs
+text-zinc-400
+">
+
+                          {text}
+
+                        </span>
+
+                      </div>
+                    )
+                  )
+              }
+
+
+
+            </div>
+
+
+          </div>
+
+
+
+
+
+
+
+
+          <div className="
+rounded-3xl
+border
+border-emerald-400/10
+bg-[#090c11]
+p-6
+">
+
+
+            <div className="
+flex
+items-center
+gap-2
+text-[10px]
+uppercase
+tracking-[0.18em]
+text-emerald-300
+">
+
+
+              <ShieldCheck
+                className="
+h-3.5
+w-3.5
+"/>
+
+              RiskGuard
+
+            </div>
+
+
+
+            <h3 className="
+mt-3
+text-xl
+font-semibold
+">
+
+              Deterministic safety layer
+
+            </h3>
+
+
+
+            <div className="
+mt-6
+space-y-3
+">
+
+
+              {
+                policyChecks.map(
+                  (check) => (
+                    <div
+                      key={check.name}
+                      className="
+flex
+items-center
+justify-between
+rounded-xl
+border
+border-white/[0.06]
+bg-black/20
+p-4
+"
+                    >
+
+                      <div>
+
+
+                        <div className="
+text-xs
+text-zinc-300
+">
+
+                          {check.name}
+
+                        </div>
+
+
+                        <div className="
+mt-1
+text-[10px]
+text-zinc-700
+">
+
+                          {check.value}
+
+                        </div>
+
+
+                      </div>
+
+
+
+                      <span className="
+text-[9px]
+uppercase
+tracking-wider
+text-emerald-300
+">
+
+                        PASS
+
+                      </span>
+
+
+                    </div>
+                  )
+                )
+              }
+
+
+
+            </div>
+
+
+          </div>
+
+
+
+        </section>
+
+
+
+
+
+
+
+
+        {/* TRUST ARCHITECTURE */}
+
+
+        <section className="
+mt-6
+rounded-3xl
+border
+border-white/[0.07]
+bg-[#090c11]
+p-6
+">
+
+
+          <div className="
+flex
+items-center
+gap-2
+text-[10px]
+uppercase
+tracking-[0.2em]
+text-zinc-600
+">
+
+
+            <Network
+              className="
+h-3.5
+w-3.5
+text-cyan-300
+"/>
+
+            Trust architecture
+
+          </div>
+
+
+
+          <div className="
+mt-6
+grid
+gap-4
+md:grid-cols-4
+">
+
+
+            {
+              [
+                {
+                  title: "Source",
+                  value: "Ethereum Sepolia",
+                  Icon: Database,
+                },
+
+                {
+                  title: "Verification",
+                  value: "Attestcoin",
+                  Icon: Fingerprint,
+                },
+
+                {
+                  title: "Intelligence",
+                  value: "AI Agent",
+                  Icon: BrainCircuit,
+                },
+
+                {
+                  title: "Execution",
+                  value: "Creditcoin",
+                  Icon: Zap,
+                },
+
+              ].map(
+                ({
+                  title,
+                  value,
+                  Icon,
+                }) => (
+                  <div
+                    key={title}
+                    className="
+rounded-xl
+border
+border-white/[0.06]
+bg-black/20
+p-4
+"
+                  >
+
+
+                    <Icon
+                      className="
+h-5
+w-5
+text-cyan-300
+"/>
+
+
+                    <div className="
+mt-4
+text-[10px]
+uppercase
+tracking-[0.15em]
+text-zinc-600
+">
+
+                      {title}
+
+                    </div>
+
+
+                    <div className="
+mt-2
+text-sm
+font-medium
+text-zinc-300
+">
+
+                      {value}
+
+                    </div>
+
+
+                  </div>
+                )
+              )
+            }
+
+
+
+          </div>
+
+
+        </section>
+
+
+
+
+
+
+
+
+        {/* EXECUTION PIPELINE */}
+
+
+        <section className="
+mt-6
+rounded-3xl
+border
+border-white/[0.07]
+bg-[#090c11]
+p-6
+">
+
+
+          <div className="
+flex
+items-center
+gap-2
+text-[10px]
+uppercase
+tracking-[0.2em]
+text-zinc-600
+">
+
+            <Activity
+              className="
+h-3.5
+w-3.5
+text-cyan-300
+"/>
+
+            Execution pipeline
+
+          </div>
+
+
+
+
+          <div className="
+mt-6
+grid
+gap-4
+md:grid-cols-4
+">
+
+
+            {
+              executionSteps.map(
+                (step, index) => (
+                  <div
+                    key={step.number}
+                    className="
+rounded-xl
+border
+border-white/[0.06]
+bg-black/20
+p-5
+"
+                  >
+
+
+                    <div className="
+flex
+justify-between
+">
+
+                      <span className="
+font-mono
+text-xs
+text-cyan-300
+">
+
+                        {step.number}
+
+                      </span>
+
+
+                      {
+                        index < 2
+                          ?
+                          <Check
+                            className="
+h-4
+w-4
+text-emerald-300
+"/>
+
+                          :
+
+                          <CircleDashed
+                            className="
+h-4
+w-4
+text-zinc-600
+"/>
+
+                      }
+
+
+                    </div>
+
+
+
+                    <div className="
+mt-5
+text-sm
+font-medium
+text-zinc-300
+">
+
+                      {step.title}
+
+                    </div>
+
+
+                    <div className="
+mt-2
+text-[10px]
+text-zinc-600
+">
+
+                      {step.detail}
+
+                    </div>
+
+
+                    <div className="
+mt-3
+text-[9px]
+uppercase
+tracking-wider
+text-cyan-300
+">
+
+                      {step.layer}
+
+                    </div>
+
+
+                  </div>
+                )
+              )
+            }
+
+
+
+          </div>
+
+
+        </section>
+
+
+
+
+
+
+
+        {/* FINAL EXECUTION */}
+
+
+        <section className="
+mt-6
+rounded-3xl
+border
+border-cyan-400/20
+bg-cyan-400/[0.03]
+p-6
+sm:p-8
+">
+
+
+          <div className="
+flex
+flex-col
+gap-6
+lg:flex-row
+lg:items-center
+lg:justify-between
+">
+
+
+            <div>
+
+
+              <div className="
+flex
+items-center
+gap-2
+text-[10px]
+uppercase
+tracking-[0.2em]
+text-cyan-300
+">
+
+                <LockKeyhole
+                  className="
+h-3.5
+w-3.5
+"/>
+
+                Creditcoin authorization
+
+              </div>
+
+
+
+              <h2 className="
+mt-3
+text-xl
+font-semibold
+">
+
+                {
+                  riskGuardPassed
+                    ?
+                    "All safety checks passed"
+                    :
+                    "Execution blocked"
+                }
+
+              </h2>
+
+
+
+              <p className="
+mt-2
+max-w-xl
+text-xs
+leading-6
+text-zinc-600
+">
+
+                AI decision is protected by RiskGuard before
+                any Creditcoin execution.
+
+              </p>
+
+
+            </div>
+
+
+
 
             <button
-              disabled={!riskGuardPassed || executing}
-              onClick={handleExecute}
-              className={`shrink-0 rounded-xl px-6 py-4 text-sm font-semibold transition ${riskGuardPassed && !executing
-                ? "bg-cyan-300 text-black hover:bg-cyan-200"
-                : "cursor-not-allowed bg-zinc-800 text-zinc-600"
-                }`}
+
+              disabled={
+                !riskGuardPassed ||
+                executing
+              }
+
+              onClick={
+                handleExecute
+              }
+
+              className={`
+rounded-xl
+px-6
+py-4
+text-sm
+font-semibold
+transition
+
+${riskGuardPassed && !executing
+
+                  ?
+
+                  "bg-cyan-300 text-black hover:bg-cyan-200"
+
+                  :
+
+                  "bg-zinc-800 text-zinc-600 cursor-not-allowed"
+                }
+
+`}
+
             >
-              {executing
-                ? "Validating RiskGuard..."
-                : riskGuardPassed
-                  ? "Execute Credit on Creditcoin →"
-                  : "Execution Blocked by RiskGuard"}
+
+              {
+                executing
+
+                  ?
+
+                  "Validating..."
+
+                  :
+
+                  "Authorize Creditcoin Execution →"
+
+              }
+
+
             </button>
+
+
           </div>
 
-          {executionError && (
-            <div className="mt-5 rounded-xl border border-red-400/20 bg-red-400/[0.04] px-4 py-3 text-xs text-red-300">
+
+
+
+
+          {
+            executionError &&
+
+            <div className="
+mt-5
+rounded-xl
+border
+border-red-400/20
+bg-red-400/[0.05]
+p-4
+text-xs
+text-red-300
+">
+
               {executionError}
+
             </div>
-          )}
 
-          <div className="mt-6 flex flex-wrap gap-3 border-t border-white/5 pt-5 text-[10px] text-zinc-600">
-            <span className="rounded-md border border-white/5 px-3 py-1.5">
-              {evidence.verified ? "✓" : "✕"} Attestcoin evidence{" "}
-              {evidence.verified ? "verified" : "not verified"}
-            </span>
+          }
 
-            <span className="rounded-md border border-white/5 px-3 py-1.5">
-              {aiDecision ? "✓" : "✕"} AI assessment{" "}
-              {aiDecision ? "complete" : "pending"}
-            </span>
 
-            <span className="rounded-md border border-white/5 px-3 py-1.5">
-              {riskGuardPassed ? "✓" : "✕"} RiskGuard{" "}
-              {riskGuardPassed ? "approved" : "blocked"}
-            </span>
 
-            <span className="rounded-md border border-white/5 px-3 py-1.5">
-              {riskGuardPassed ? "✓" : "✕"} Credit terms{" "}
-              {riskGuardPassed ? "within policy" : "outside policy"}
-            </span>
-          </div>
         </section>
+
+
+
       </div>
+
     </main>
+
   );
+
 }

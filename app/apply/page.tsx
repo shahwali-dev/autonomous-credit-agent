@@ -1,601 +1,1315 @@
 "use client";
 
 import { useState } from "react";
-import { useCreditStore } from "@/lib/store/credit-store";
 import { useRouter } from "next/navigation";
+import { useCreditStore } from "@/lib/store/credit-store";
 
-const evidenceOptions = [
+const evidenceSources = [
   {
     id: "repayment",
     title: "Repayment History",
-    description: "Verified borrowing and repayment activity",
+    description:
+      "Verified borrowing behavior and previous repayment activity.",
+    source: "Attestcoin Proof",
+    confidence: "+25 Credit Confidence",
   },
   {
     id: "collateral",
-    title: "Collateral",
-    description: "Verified assets available as credit support",
+    title: "Verified Collateral",
+    description:
+      "On-chain assets available as transparent credit backing.",
+    source: "Cross-chain Asset Proof",
+    confidence: "+20 Credit Confidence",
   },
   {
     id: "activity",
     title: "Financial Activity",
-    description: "Cross-chain transaction and settlement history",
+    description:
+      "Cross-chain transaction and settlement behavior.",
+    source: "Blockchain History",
+    confidence: "+15 Credit Confidence",
+  },
+];
+
+const supportedChains = [
+  {
+    name: "Ethereum Sepolia",
+    chainId: "11155111",
+    status: "Verified",
+  },
+  {
+    name: "Creditcoin Testnet",
+    chainId: "102031",
+    status: "Verified",
+  },
+];
+
+const pipelineSteps = [
+  {
+    id: "01",
+    title: "Wallet Identity",
+    subtitle: "Borrower verification",
+    icon: "◉",
+  },
+  {
+    id: "02",
+    title: "Attestcoin",
+    subtitle: "Cryptographic evidence",
+    icon: "◆",
+  },
+  {
+    id: "03",
+    title: "AI Agent",
+    subtitle: "Risk intelligence",
+    icon: "✦",
+  },
+  {
+    id: "04",
+    title: "RiskGuard",
+    subtitle: "Policy validation",
+    icon: "◈",
+  },
+  {
+    id: "05",
+    title: "Creditcoin",
+    subtitle: "Execution layer",
+    icon: "⬢",
   },
 ];
 
 export default function ApplyPage() {
   const router = useRouter();
 
-  const application = useCreditStore((state) => state.application);
-  const setApplication = useCreditStore((state) => state.setApplication);
+  const application = useCreditStore(
+    (state) => state.application
+  );
 
-  const [selectedEvidence, setSelectedEvidence] = useState<string[]>([
-    "repayment",
-    "collateral",
-    "activity",
-  ]);
+  const setApplication = useCreditStore(
+    (state) => state.setApplication
+  );
 
-  const [walletConnecting, setWalletConnecting] = useState(false);
+  const [selectedEvidence, setSelectedEvidence] =
+    useState<string[]>([
+      "repayment",
+      "collateral",
+      "activity",
+    ]);
+
+  const [walletConnecting, setWalletConnecting] =
+    useState(false);
+
   const [error, setError] = useState("");
 
-  const walletConnected = Boolean(application.walletAddress);
+  const walletConnected =
+    Boolean(application.walletAddress);
 
-  const toggleEvidence = (id: string) => {
+
+  function toggleEvidence(id: string) {
     setSelectedEvidence((current) =>
       current.includes(id)
         ? current.filter((item) => item !== id)
         : [...current, id]
     );
-  };
+  }
 
-  const handleStartAssessment = () => {
-    setError("");
 
-    if (application.requestedAmount <= 0) {
-      setError("Requested credit must be greater than $0.");
-      return;
-    }
-
-    if (application.durationDays <= 0) {
-      setError("Credit duration must be greater than 0 days.");
-      return;
-    }
-
-    if (application.collateral < 0) {
-      setError("Collateral cannot be negative.");
-      return;
-    }
-
-    if (selectedEvidence.length === 0) {
-      setError("Select at least one evidence source.");
-      return;
-    }
-
-    /*
-     * Important:
-     * We do NOT generate the AI decision here.
-     *
-     * The correct flow is:
-     *
-     * Application
-     *      ↓
-     * Evidence verification
-     *      ↓
-     * AI underwriting
-     *      ↓
-     * RiskGuard
-     *      ↓
-     * Creditcoin execution
-     */
-    router.push("/evidence");
-  };
-
-  const handleConnectWallet = async () => {
+  async function connectWallet() {
     setWalletConnecting(true);
     setError("");
 
     try {
-      if (typeof window === "undefined") return;
+      if (typeof window === "undefined") {
+        return;
+      }
 
       const ethereum = (
         window as typeof window & {
           ethereum?: {
-            request: (args: {
+            request(args: {
               method: string;
-            }) => Promise<string[]>;
+            }): Promise<string[]>;
           };
         }
       ).ethereum;
 
+
       if (!ethereum) {
         setError(
-          "No EVM wallet detected. Install MetaMask or another compatible wallet."
+          "No compatible EVM wallet detected."
         );
         return;
       }
 
-      const accounts = await ethereum.request({
-        method: "eth_requestAccounts",
-      });
+
+      const accounts =
+        await ethereum.request({
+          method: "eth_requestAccounts",
+        });
+
 
       if (!accounts?.[0]) {
-        setError("No wallet account was returned.");
+        setError(
+          "Wallet account unavailable."
+        );
         return;
       }
+
 
       setApplication({
         walletAddress: accounts[0],
       });
-    } catch (err) {
-      console.error(err);
+
+
+    } catch (error) {
+
+      console.error(error);
 
       setError(
-        "Wallet connection was cancelled or could not be completed."
+        "Wallet connection failed."
       );
+
     } finally {
+
       setWalletConnecting(false);
+
     }
-  };
+  }
+
+
+
+  function startAssessment() {
+
+    setError("");
+
+    if (
+      application.requestedAmount <= 0
+    ) {
+      setError(
+        "Enter a valid credit amount."
+      );
+      return;
+    }
+
+
+    if (
+      application.durationDays <= 0
+    ) {
+      setError(
+        "Select a valid duration."
+      );
+      return;
+    }
+
+
+    if (
+      selectedEvidence.length === 0
+    ) {
+      setError(
+        "Select evidence sources."
+      );
+      return;
+    }
+
+
+    router.push("/evidence");
+  }
+
+
 
   return (
     <main className="min-h-screen bg-[#07090d] text-white">
-      <div className="mx-auto max-w-6xl px-5 py-8 md:px-8">
-        {/* Header */}
-        <div className="flex flex-col gap-5 border-b border-white/10 pb-8 md:flex-row md:items-end md:justify-between">
+
+      <div className="mx-auto max-w-7xl px-5 py-8 md:px-8">
+
+
+        {/* Protocol Header */}
+
+        <section
+          className="
+          flex flex-col gap-6
+          border-b border-white/10
+          pb-8
+          md:flex-row
+          md:items-end
+          md:justify-between
+          "
+        >
+
           <div>
-            <div className="text-[10px] uppercase tracking-[0.22em] text-cyan-300">
-              Credit Application
+
+            <div
+              className="
+              text-[10px]
+              uppercase
+              tracking-[0.3em]
+              text-cyan-300
+              "
+            >
+              Autonomous Credit Protocol
             </div>
 
-            <h1 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
-              Apply for autonomous credit
+
+            <h1
+              className="
+              mt-3
+              text-4xl
+              font-semibold
+              tracking-tight
+              "
+            >
+              Create Credit Assessment
             </h1>
 
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-zinc-500">
-              Submit your credit request and allow the Autonomous Credit Agent
-              to evaluate verified cross-chain financial evidence.
+
+            <p
+              className="
+              mt-3
+              max-w-2xl
+              text-sm
+              leading-7
+              text-zinc-500
+              "
+            >
+              Submit a credit request and allow the
+              AI Credit Agent to evaluate verified
+              cross-chain financial evidence through
+              Attestcoin and Creditcoin infrastructure.
             </p>
+
           </div>
 
-          <div className="rounded-xl border border-cyan-400/10 bg-cyan-400/[0.03] px-4 py-3">
-            <div className="text-[10px] uppercase tracking-[0.18em] text-zinc-600">
-              Assessment
+
+
+          <div
+            className="
+            rounded-xl
+            border border-cyan-400/20
+            bg-cyan-400/[0.04]
+            px-5 py-4
+            "
+          >
+
+            <div
+              className="
+              text-[10px]
+              uppercase
+              tracking-widest
+              text-zinc-600
+              "
+            >
+              Agent Status
             </div>
 
-            <div className="mt-1 flex items-center gap-2 text-xs text-cyan-300">
-              <span className="h-1.5 w-1.5 rounded-full bg-cyan-400" />
-              Ready to start
+
+            <div
+              className="
+              mt-2
+              flex
+              items-center
+              gap-2
+              text-xs
+              text-emerald-300
+              "
+            >
+
+              <span
+                className="
+                h-2
+                w-2
+                animate-pulse
+                rounded-full
+                bg-emerald-400
+                "
+              />
+
+              Ready For Assessment
+
             </div>
+
           </div>
-        </div>
 
-        <div className="mt-8 grid gap-6 lg:grid-cols-[1.4fr_0.8fr]">
-          {/* Application Form */}
-          <section className="rounded-2xl border border-white/10 bg-[#0b0f14] p-6 md:p-8">
-            <div className="mb-7">
-              <div className="text-sm font-semibold">
-                Credit request
-              </div>
 
-              <div className="mt-1 text-xs text-zinc-600">
-                Define the credit line you want the agent to evaluate.
-              </div>
-            </div>
+        </section>
 
-            <div className="grid gap-5 md:grid-cols-2">
-              {/* Requested Credit */}
+
+
+        <div
+          className="
+          mt-8
+          grid
+          gap-6
+          lg:grid-cols-[1.4fr_0.8fr]
+          "
+        >
+
+
+          {/* MAIN FORM */}
+
+          <section
+            className="
+            rounded-2xl
+            border border-white/10
+            bg-[#0b0f14]
+            p-6
+            md:p-8
+            "
+          >
+
+
+            <h2
+              className="
+              text-lg
+              font-semibold
+              "
+            >
+              Credit Request
+            </h2>
+
+
+            <p
+              className="
+              mt-1
+              text-xs
+              text-zinc-600
+              "
+            >
+              Define parameters for autonomous underwriting.
+            </p>
+
+
+
+            <div
+              className="
+              mt-7
+              grid
+              gap-5
+              md:grid-cols-2
+              "
+            >
+
+
+              {/* Amount */}
+
               <div>
+
                 <label
-                  htmlFor="requested-credit"
-                  className="text-xs text-zinc-500"
+                  className="
+                  text-xs
+                  text-zinc-500
+                  "
                 >
-                  Requested credit
+                  Requested Amount
                 </label>
 
-                <div className="mt-2 flex items-center rounded-xl border border-white/10 bg-black/20 px-4 focus-within:border-cyan-400/40">
-                  <span className="text-sm text-zinc-600">$</span>
+
+                <div
+                  className="
+                  mt-2
+                  flex
+                  rounded-xl
+                  border border-white/10
+                  bg-black/20
+                  px-4
+                  "
+                >
+
+                  <span className="flex items-center text-zinc-600">
+                    $
+                  </span>
+
 
                   <input
-                    id="requested-credit"
                     type="number"
                     min="0"
-                    value={application.requestedAmount}
+                    value={
+                      application.requestedAmount
+                    }
                     onChange={(e) =>
                       setApplication({
-                        requestedAmount: Number(e.target.value),
+                        requestedAmount:
+                          Number(e.target.value),
                       })
                     }
-                    className="w-full bg-transparent px-3 py-3 text-sm text-white outline-none"
+                    className="
+                    w-full
+                    bg-transparent
+                    px-3
+                    py-3
+                    text-sm
+                    outline-none
+                    "
                   />
 
-                  <span className="text-xs text-zinc-600">
+
+                  <span
+                    className="
+                    flex items-center
+                    text-xs
+                    text-zinc-600
+                    "
+                  >
                     USDC
                   </span>
+
+
                 </div>
+
               </div>
+
+
+
 
               {/* Duration */}
+
               <div>
+
                 <label
-                  htmlFor="credit-duration"
-                  className="text-xs text-zinc-500"
+                  className="
+                  text-xs
+                  text-zinc-500
+                  "
                 >
-                  Credit duration
+                  Duration
                 </label>
 
-                <select
-                  id="credit-duration"
-                  value={application.durationDays}
-                  onChange={(e) =>
-                    setApplication({
-                      durationDays: Number(e.target.value),
-                    })
-                  }
-                  className="mt-2 w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-zinc-300 outline-none focus:border-cyan-400/40"
-                >
-                  <option value={30}>30 days</option>
-                  <option value={60}>60 days</option>
-                  <option value={90}>90 days</option>
-                  <option value={180}>180 days</option>
-                </select>
-              </div>
-
-              {/* Source Chain */}
-              <div>
-                <label
-                  htmlFor="source-chain"
-                  className="text-xs text-zinc-500"
-                >
-                  Source chain
-                </label>
 
                 <select
-                  id="source-chain"
-                  value={application.sourceChain}
+                  value={
+                    application.durationDays
+                  }
                   onChange={(e) =>
                     setApplication({
-                      sourceChain: e.target.value,
+                      durationDays:
+                        Number(e.target.value),
                     })
                   }
-                  className="mt-2 w-full rounded-xl border border-white/10 bg-black/20 px-4 py-3 text-sm text-zinc-300 outline-none focus:border-cyan-400/40"
+                  className="
+                  mt-2
+                  w-full
+                  rounded-xl
+                  border border-white/10
+                  bg-black/20
+                  px-4
+                  py-3
+                  text-sm
+                  text-zinc-300
+                  outline-none
+                  "
                 >
-                  <option value="Ethereum Sepolia">
-                    Ethereum Sepolia
+
+                  <option value={30}>
+                    30 Days
                   </option>
 
-                  <option value="Creditcoin">
-                    Creditcoin
+                  <option value={60}>
+                    60 Days
                   </option>
 
-                  <option value="Other supported chain">
-                    Other supported chain
+                  <option value={90}>
+                    90 Days
                   </option>
+
+                  <option value={180}>
+                    180 Days
+                  </option>
+
                 </select>
+
+
               </div>
+
+
+
+
 
               {/* Collateral */}
+
               <div>
+
                 <label
-                  htmlFor="collateral"
-                  className="text-xs text-zinc-500"
+                  className="
+                  text-xs
+                  text-zinc-500
+                  "
                 >
-                  Verified collateral
+                  Declared Collateral
                 </label>
 
-                <div className="mt-2 flex items-center rounded-xl border border-white/10 bg-black/20 px-4 focus-within:border-cyan-400/40">
-                  <span className="text-sm text-zinc-600">$</span>
+
+                <div
+                  className="
+                  mt-2
+                  flex
+                  rounded-xl
+                  border border-white/10
+                  bg-black/20
+                  px-4
+                  "
+                >
+
+                  <span className="flex items-center text-zinc-600">
+                    $
+                  </span>
+
 
                   <input
-                    id="collateral"
                     type="number"
                     min="0"
-                    value={application.collateral}
+                    value={
+                      application.collateral
+                    }
                     onChange={(e) =>
                       setApplication({
-                        collateral: Number(e.target.value),
+                        collateral:
+                          Number(e.target.value),
                       })
                     }
-                    className="w-full bg-transparent px-3 py-3 text-sm text-white outline-none"
+                    className="
+                    w-full
+                    bg-transparent
+                    px-3
+                    py-3
+                    text-sm
+                    outline-none
+                    "
                   />
 
-                  <span className="text-xs text-zinc-600">
+
+                  <span className="flex items-center text-xs text-zinc-600">
                     USDC
                   </span>
+
                 </div>
+
+
               </div>
+
+
             </div>
+
+
+            {/* SOURCE CHAIN */}
+
+            <div className="mt-6">
+
+              <div className="flex items-center justify-between">
+
+                <label
+                  className="
+                  text-xs
+                  text-zinc-500
+                  "
+                >
+                  Evidence Source Chain
+                </label>
+
+
+                <span
+                  className="
+                  rounded-md
+                  border border-cyan-400/20
+                  bg-cyan-400/5
+                  px-2
+                  py-1
+                  text-[9px]
+                  uppercase
+                  tracking-wider
+                  text-cyan-300
+                  "
+                >
+                  Attestcoin Ready
+                </span>
+
+              </div>
+
+
+              <select
+                value={application.sourceChain}
+                onChange={(e) =>
+                  setApplication({
+                    sourceChain: e.target.value,
+                  })
+                }
+                className="
+                mt-2
+                w-full
+                rounded-xl
+                border border-white/10
+                bg-black/20
+                px-4
+                py-3
+                text-sm
+                text-zinc-300
+                outline-none
+                "
+              >
+
+                {supportedChains.map((chain) => (
+                  <option
+                    key={chain.chainId}
+                    value={chain.name}
+                  >
+                    {chain.name}
+                  </option>
+                ))}
+
+              </select>
+
+            </div>
+
+
 
             {/* Evidence */}
-            <div className="mt-8 border-t border-white/5 pt-7">
-              <div className="text-sm font-semibold">
-                Evidence sources
+
+            <div
+              className="
+              mt-8
+              border-t
+              border-white/5
+              pt-7
+              "
+            >
+
+              <div className="flex items-center justify-between">
+
+                <div>
+
+                  <h2 className="text-sm font-semibold">
+                    Evidence Sources
+                  </h2>
+
+
+                  <p
+                    className="
+                    mt-1
+                    text-xs
+                    text-zinc-600
+                    "
+                  >
+                    Verified signals used by AI underwriting.
+                  </p>
+
+                </div>
+
+
+                <div
+                  className="
+                  rounded-lg
+                  border border-cyan-400/20
+                  bg-cyan-400/5
+                  px-3
+                  py-2
+                  text-xs
+                  text-cyan-300
+                  "
+                >
+
+                  {selectedEvidence.length}
+                  /
+                  {evidenceSources.length}
+
+                </div>
+
+
               </div>
 
-              <div className="mt-1 text-xs text-zinc-600">
-                Select the financial evidence the agent should analyze.
-              </div>
+
 
               <div className="mt-5 space-y-3">
-                {evidenceOptions.map((item) => {
-                  const selected = selectedEvidence.includes(item.id);
+
+
+                {evidenceSources.map((item) => {
+
+                  const selected =
+                    selectedEvidence.includes(item.id);
+
 
                   return (
-                    <label
+
+                    <button
                       key={item.id}
-                      className={`flex cursor-pointer items-start gap-4 rounded-xl border p-4 transition ${
-                        selected
-                          ? "border-cyan-400/20 bg-cyan-400/[0.03]"
-                          : "border-white/5 bg-black/20 hover:border-white/10 hover:bg-white/[0.02]"
-                      }`}
+                      type="button"
+                      onClick={() =>
+                        toggleEvidence(item.id)
+                      }
+                      className={`
+                      w-full
+                      rounded-xl
+                      border
+                      p-4
+                      text-left
+                      transition
+
+                      ${selected
+                          ? "border-cyan-400/30 bg-cyan-400/[0.04]"
+                          : "border-white/5 bg-black/20 hover:border-white/10"
+                        }
+                      `}
                     >
-                      <input
-                        type="checkbox"
-                        checked={selected}
-                        onChange={() => toggleEvidence(item.id)}
-                        className="mt-1 h-4 w-4 accent-cyan-300"
-                      />
 
-                      <div className="flex-1">
-                        <div className="text-xs font-medium text-zinc-300">
-                          {item.title}
+
+                      <div className="flex gap-4">
+
+
+                        <div
+                          className={`
+                          flex
+                          h-9
+                          w-9
+                          items-center
+                          justify-center
+                          rounded-lg
+                          border
+
+                          ${selected
+                              ? "border-cyan-400/20 text-cyan-300"
+                              : "border-white/10 text-zinc-700"
+                            }
+                          `}
+                        >
+
+                          {selected ? "✓" : "○"}
+
                         </div>
 
-                        <div className="mt-1 text-[11px] text-zinc-600">
-                          {item.description}
+
+
+                        <div className="flex-1">
+
+
+                          <div
+                            className="
+                            flex
+                            justify-between
+                            gap-3
+                            "
+                          >
+
+                            <span
+                              className="
+                              text-xs
+                              font-medium
+                              text-zinc-200
+                              "
+                            >
+                              {item.title}
+                            </span>
+
+
+                            <span
+                              className="
+                              text-[9px]
+                              uppercase
+                              tracking-wider
+                              text-cyan-300
+                              "
+                            >
+                              {item.confidence}
+                            </span>
+
+                          </div>
+
+
+                          <p
+                            className="
+                            mt-2
+                            text-[11px]
+                            leading-5
+                            text-zinc-600
+                            "
+                          >
+                            {item.description}
+                          </p>
+
+
+                          <div
+                            className="
+                            mt-2
+                            text-[10px]
+                            text-zinc-700
+                            "
+                          >
+                            Source: {item.source}
+                          </div>
+
+
                         </div>
+
+
                       </div>
 
-                      <span
-                        className={`rounded-md border px-2 py-1 text-[9px] uppercase tracking-wider ${
-                          selected
-                            ? "border-cyan-400/20 bg-cyan-400/5 text-cyan-300"
-                            : "border-white/10 text-zinc-600"
-                        }`}
-                      >
-                        {selected ? "Selected" : "Optional"}
-                      </span>
-                    </label>
+
+                    </button>
+
                   );
+
                 })}
+
+
               </div>
+
+
             </div>
 
-            {/* Wallet */}
-            <div className="mt-8 border-t border-white/5 pt-7">
-              <div className="text-sm font-semibold">
-                Borrower wallet
-              </div>
 
-              <div className="mt-1 text-xs text-zinc-600">
-                The connected wallet will be used for evidence verification
-                and later credit execution.
-              </div>
+
+
+
+            {/* WALLET */}
+
+            <div
+              className="
+              mt-8
+              border-t
+              border-white/5
+              pt-7
+              "
+            >
+
+              <h2 className="text-sm font-semibold">
+                Borrower Wallet
+              </h2>
+
+
+              <p
+                className="
+                mt-1
+                text-xs
+                text-zinc-600
+                "
+              >
+                Wallet identity required for verification.
+              </p>
+
+
 
               <div
-                className={`mt-4 flex flex-col gap-4 rounded-xl border bg-black/20 p-4 sm:flex-row sm:items-center sm:justify-between ${
-                  walletConnected
-                    ? "border-emerald-400/20"
-                    : "border-dashed border-white/10"
-                }`}
+                className="
+                mt-4
+                rounded-xl
+                border border-white/10
+                bg-black/20
+                p-4
+                "
               >
-                <div className="min-w-0">
-                  <div
-                    className={`text-xs ${
-                      walletConnected
-                        ? "text-emerald-300"
-                        : "text-zinc-500"
-                    }`}
-                  >
-                    {walletConnected
-                      ? "Wallet connected"
-                      : "Wallet not connected"}
-                  </div>
 
-                  <div className="mt-1 truncate font-mono text-[10px] text-zinc-600">
-                    {application.walletAddress
-                      ? `${application.walletAddress.slice(
-                          0,
-                          8
-                        )}...${application.walletAddress.slice(-6)}`
-                      : "0x0000...0000"}
-                  </div>
-                </div>
-
-                <button
-                  onClick={handleConnectWallet}
-                  disabled={walletConnecting}
-                  className={`shrink-0 rounded-lg border px-4 py-2 text-xs font-medium transition ${
-                    walletConnecting
-                      ? "cursor-wait border-white/10 bg-white/[0.03] text-zinc-600"
-                      : walletConnected
-                        ? "border-emerald-400/20 bg-emerald-400/5 text-emerald-300 hover:bg-emerald-400/10"
-                        : "border-cyan-400/30 bg-cyan-400/10 text-cyan-300 hover:bg-cyan-400/20"
-                  }`}
+                <div
+                  className="
+                  flex
+                  items-center
+                  justify-between
+                  gap-4
+                  "
                 >
-                  {walletConnecting
-                    ? "Connecting..."
-                    : walletConnected
-                      ? "Wallet Connected"
-                      : "Connect Wallet"}
-                </button>
-              </div>
-            </div>
 
-            {/* Error */}
-            {error && (
-              <div className="mt-6 rounded-xl border border-red-400/20 bg-red-400/[0.04] px-4 py-3 text-xs leading-5 text-red-300">
-                {error}
-              </div>
-            )}
+                  <div>
 
-            {/* CTA */}
-            <button
-              onClick={handleStartAssessment}
-              className="mt-8 flex w-full items-center justify-center gap-3 rounded-xl bg-cyan-300 px-5 py-4 text-sm font-semibold text-black transition hover:bg-cyan-200"
-            >
-              Continue to Evidence Verification
-              <span>→</span>
-            </button>
 
-            <div className="mt-3 text-center text-[10px] text-zinc-700">
-              No credit will be executed until Attestcoin evidence is verified
-              and RiskGuard approves the final decision.
-            </div>
-          </section>
+                    <div className="text-xs text-zinc-400">
 
-          {/* Right Side */}
-          <aside className="space-y-6">
-            {/* Request Summary */}
-            <section className="rounded-2xl border border-white/10 bg-[#0b0f14] p-6">
-              <div className="text-sm font-semibold">
-                Request summary
-              </div>
+                      {
+                        walletConnected
+                          ? "Wallet Connected"
+                          : "Wallet Required"
+                      }
 
-              <div className="mt-1 text-xs text-zinc-600">
-                Current application parameters.
-              </div>
-
-              <div className="mt-6 space-y-4">
-                <div className="flex justify-between border-b border-white/5 pb-3">
-                  <span className="text-xs text-zinc-600">
-                    Requested
-                  </span>
-
-                  <span className="text-xs font-medium text-zinc-300">
-                    $
-                    {application.requestedAmount.toLocaleString()} USDC
-                  </span>
-                </div>
-
-                <div className="flex justify-between border-b border-white/5 pb-3">
-                  <span className="text-xs text-zinc-600">
-                    Duration
-                  </span>
-
-                  <span className="text-xs text-zinc-400">
-                    {application.durationDays} days
-                  </span>
-                </div>
-
-                <div className="flex justify-between border-b border-white/5 pb-3">
-                  <span className="text-xs text-zinc-600">
-                    Collateral
-                  </span>
-
-                  <span className="text-xs text-zinc-400">
-                    ${application.collateral.toLocaleString()} USDC
-                  </span>
-                </div>
-
-                <div className="flex justify-between">
-                  <span className="text-xs text-zinc-600">
-                    Source
-                  </span>
-
-                  <span className="text-xs text-cyan-300">
-                    {application.sourceChain}
-                  </span>
-                </div>
-              </div>
-            </section>
-
-            {/* Assessment Preview */}
-            <section className="rounded-2xl border border-white/10 bg-[#0b0f14] p-6">
-              <div className="text-sm font-semibold">
-                Assessment pipeline
-              </div>
-
-              <div className="mt-1 text-xs text-zinc-600">
-                What happens after you submit the application.
-              </div>
-
-              <div className="mt-6 space-y-4">
-                {[
-                  ["01", "Cross-chain evidence", "Attestcoin"],
-                  ["02", "Repayment behavior", "AI analysis"],
-                  ["03", "Risk profile", "Risk engine"],
-                  ["04", "Credit terms", "Agent recommendation"],
-                  ["05", "Policy validation", "RiskGuard"],
-                ].map(([number, title, label]) => (
-                  <div
-                    key={number}
-                    className="flex items-center gap-3 border-b border-white/5 pb-4 last:border-0 last:pb-0"
-                  >
-                    <span className="font-mono text-[10px] text-cyan-400/60">
-                      {number}
-                    </span>
-
-                    <div className="flex-1">
-                      <div className="text-xs text-zinc-400">
-                        {title}
-                      </div>
-
-                      <div className="mt-1 text-[9px] uppercase tracking-wider text-zinc-700">
-                        {label}
-                      </div>
                     </div>
 
-                    <span className="h-1.5 w-1.5 rounded-full bg-zinc-700" />
+
+                    <div
+                      className="
+                      mt-2
+                      font-mono
+                      text-[10px]
+                      text-zinc-600
+                      "
+                    >
+
+                      {
+                        application.walletAddress
+                          ? `${application.walletAddress.slice(
+                            0,
+                            10
+                          )}...${application.walletAddress.slice(
+                            -8
+                          )}`
+                          : "No address"
+                      }
+
+                    </div>
+
+
                   </div>
-                ))}
-              </div>
-            </section>
 
-            {/* Safety */}
-            <section className="rounded-2xl border border-emerald-400/10 bg-emerald-400/[0.02] p-6">
-              <div className="flex items-center gap-2">
-                <span className="h-2 w-2 rounded-full bg-emerald-400" />
 
-                <div className="text-sm font-semibold text-zinc-300">
-                  Autonomous execution is bounded
+
+
+                  <button
+                    type="button"
+                    onClick={connectWallet}
+                    disabled={walletConnecting}
+                    className="
+                    rounded-lg
+                    border border-cyan-400/30
+                    bg-cyan-400/10
+                    px-4
+                    py-2
+                    text-xs
+                    text-cyan-300
+                    "
+                  >
+
+                    {
+                      walletConnecting
+                        ? "Connecting..."
+                        : walletConnected
+                          ? "Connected"
+                          : "Connect Wallet"
+                    }
+
+
+                  </button>
+
+
                 </div>
+
+
               </div>
 
-              <p className="mt-3 text-xs leading-6 text-zinc-600">
-                The AI agent cannot freely execute credit. Every decision is
-                checked against deterministic RiskGuard policies before
-                Creditcoin execution.
+
+            </div>
+
+
+
+
+
+            {/* ERROR */}
+
+            {
+              error && (
+
+                <div
+                  className="
+                  mt-6
+                  rounded-xl
+                  border border-red-400/20
+                  bg-red-400/5
+                  p-4
+                  text-xs
+                  text-red-300
+                  "
+                >
+
+                  {error}
+
+                </div>
+
+              )
+            }
+
+
+
+
+
+            {/* CTA */}
+
+            <button
+              type="button"
+              onClick={startAssessment}
+              className="
+              mt-8
+              flex
+              w-full
+              items-center
+              justify-center
+              gap-3
+              rounded-xl
+              bg-cyan-300
+              px-5
+              py-4
+              text-sm
+              font-semibold
+              text-black
+              transition
+              hover:bg-cyan-200
+              "
+            >
+
+              Continue To Evidence Verification →
+
+            </button>
+
+
+          </section>
+
+
+
+
+
+          {/* RIGHT SIDE */}
+
+          <aside className="space-y-6">
+
+
+            <section
+              className="
+              rounded-2xl
+              border border-white/10
+              bg-[#0b0f14]
+              p-6
+              "
+            >
+
+              <div
+                className="
+                text-[10px]
+                uppercase
+                tracking-widest
+                text-zinc-600
+                "
+              >
+                AI Pipeline
+              </div>
+
+
+
+              <div className="mt-6 space-y-5">
+
+
+                {pipelineSteps.map((step) => (
+
+                  <div
+                    key={step.id}
+                    className="
+                    flex
+                    gap-3
+                    "
+                  >
+
+                    <div
+                      className="
+                      flex
+                      h-8
+                      w-8
+                      items-center
+                      justify-center
+                      rounded-lg
+                      border border-cyan-400/20
+                      bg-cyan-400/5
+                      text-xs
+                      text-cyan-300
+                      "
+                    >
+                      {step.icon}
+                    </div>
+
+
+                    <div>
+
+                      <div
+                        className="
+                        text-xs
+                        text-zinc-300
+                        "
+                      >
+                        {step.title}
+                      </div>
+
+
+                      <div
+                        className="
+                        text-[10px]
+                        text-zinc-700
+                        "
+                      >
+                        {step.subtitle}
+                      </div>
+
+
+                    </div>
+
+
+                  </div>
+
+                ))}
+
+
+              </div>
+
+
+            </section>
+
+
+
+
+
+            <section
+              className="
+              rounded-2xl
+              border border-cyan-400/10
+              bg-cyan-400/[0.03]
+              p-6
+              "
+            >
+
+              <div
+                className="
+                flex
+                items-center
+                gap-2
+                text-xs
+                uppercase
+                tracking-wider
+                text-cyan-300
+                "
+              >
+
+                <span
+                  className="
+                  h-2
+                  w-2
+                  animate-pulse
+                  rounded-full
+                  bg-cyan-300
+                  "
+                />
+
+                AI Agent Preview
+
+              </div>
+
+
+
+              <h3
+                className="
+                mt-4
+                text-sm
+                font-semibold
+                "
+              >
+                Waiting for verified evidence
+              </h3>
+
+
+              <p
+                className="
+                mt-2
+                text-xs
+                leading-6
+                text-zinc-600
+                "
+              >
+                Agent reasoning begins after Attestcoin verification.
               </p>
+
+
             </section>
 
-            {/* Flow */}
-            <section className="rounded-2xl border border-white/10 bg-[#0b0f14] p-6">
-              <div className="text-[10px] uppercase tracking-[0.18em] text-zinc-600">
-                Execution flow
-              </div>
 
-              <div className="mt-4 flex flex-wrap items-center gap-2 text-[10px]">
-                <span className="rounded-md border border-cyan-400/20 bg-cyan-400/5 px-2 py-1 text-cyan-300">
-                  Application
-                </span>
 
-                <span className="text-zinc-700">→</span>
 
-                <span className="rounded-md border border-cyan-400/20 bg-cyan-400/5 px-2 py-1 text-cyan-300">
-                  Attestcoin
-                </span>
 
-                <span className="text-zinc-700">→</span>
+            <section
+              className="
+              rounded-2xl
+              border border-emerald-400/10
+              bg-emerald-400/[0.02]
+              p-6
+              "
+            >
 
-                <span className="rounded-md border border-white/10 px-2 py-1 text-zinc-500">
-                  AI
-                </span>
+              <h3
+                className="
+                text-sm
+                font-semibold
+                text-zinc-300
+                "
+              >
+                Bounded Autonomous Execution
+              </h3>
 
-                <span className="text-zinc-700">→</span>
 
-                <span className="rounded-md border border-emerald-400/20 bg-emerald-400/5 px-2 py-1 text-emerald-300">
-                  RiskGuard
-                </span>
+              <p
+                className="
+                mt-3
+                text-xs
+                leading-6
+                text-zinc-600
+                "
+              >
+                AI recommendations are validated by RiskGuard before Creditcoin execution.
+              </p>
 
-                <span className="text-zinc-700">→</span>
 
-                <span className="rounded-md border border-white/10 px-2 py-1 text-zinc-500">
-                  Creditcoin
-                </span>
-              </div>
             </section>
+
+
           </aside>
+
+
         </div>
+
+
+
+
+
+        {/* FINAL FLOW */}
+
+        <section
+          className="
+          mt-6
+          rounded-2xl
+          border border-white/10
+          bg-[#0b0f14]
+          p-5
+          "
+        >
+
+          <div
+            className="
+            flex
+            flex-col
+            gap-3
+            md:flex-row
+            md:items-center
+            md:justify-between
+            "
+          >
+
+            <div>
+
+              <div className="text-xs text-zinc-300">
+                Verification Flow
+              </div>
+
+
+              <div className="mt-1 text-[10px] text-zinc-700">
+                Truth → Intelligence → Execution
+              </div>
+
+            </div>
+
+
+            <div
+              className="
+              text-[10px]
+              uppercase
+              tracking-wider
+              text-cyan-300
+              "
+            >
+              Attestcoin → AI → RiskGuard → Creditcoin
+            </div>
+
+
+          </div>
+
+
+        </section>
+
+
       </div>
+
     </main>
   );
 }
